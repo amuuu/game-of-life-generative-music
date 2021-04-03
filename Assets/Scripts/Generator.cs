@@ -32,14 +32,38 @@ public class Generator : MonoBehaviour
         newMap = new bool[maxMapSize, maxMapSize];
         map = new bool[maxMapSize, maxMapSize];
 
-        map[5, 5] = true;
-        map[6, 5] = true;
         map[7, 5] = true;
-        
-        mapObjs[5, 5] = Instantiate(cubePrefab, new Vector3(5 * blockDistance, 0, 5 * blockDistance), Quaternion.identity);
-        mapObjs[6, 5] = Instantiate(cubePrefab, new Vector3(6 * blockDistance, 0, 5 * blockDistance), Quaternion.identity);
-        mapObjs[7, 5] = Instantiate(cubePrefab, new Vector3(7 * blockDistance, 0, 5 * blockDistance), Quaternion.identity);
-        //newMap = map;
+        map[8, 5] = true;
+        map[9, 5] = true;
+        map[10, 5] = true;
+        map[6, 6] = true;
+        map[7, 6] = true;
+        map[8, 6] = true;
+        map[9, 6] = true;
+        map[10, 6] = true;
+        map[11, 6] = true;
+        map[6, 7] = true;
+        map[7, 7] = true;
+        map[8, 7] = true;
+        map[9, 7] = true;
+        map[11, 7] = true;
+        map[12, 7] = true;
+        map[10, 8] = true;
+        map[11, 8] = true;
+
+        newMap = (bool[,]) map.Clone();
+
+
+        for (int i = padding; i < maxMapSize - padding; i++)
+        {
+            for (int j = padding; j < maxMapSize - padding; j++)
+            {
+
+                UpdateDisplay(i, j);
+
+            }
+        }
+
     }
 
     void Update()
@@ -69,28 +93,19 @@ public class Generator : MonoBehaviour
 
     void UpdateDisplay(int x, int y)
     {
-        //Destroy(mapObjs[x, y]);
+        Destroy(mapObjs[x, y]);
 
         if (newMap[x, y])
         {
             mapObjs[x, y] = Instantiate(cubePrefab, new Vector3(x * blockDistance, 0, y * blockDistance), Quaternion.identity);
 
-            if (x==6 && y==6)
-            {
-                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-
-                //Get the Renderer component from the new cube
-                var cubeRenderer = mapObjs[x, y].GetComponent<Renderer>();
-
-                //Call SetColor using the shader property name "_Color" and setting the color to red
-                cubeRenderer.material.SetColor("_Color", Color.red);
-            }
+            
         }
-        else
+        /*else
         {
             Destroy(mapObjs[x, y]);
             mapObjs[x, y] = empty_;
-        }
+        }*/
     }
 
     bool UpdateCellState(int x, int y)
