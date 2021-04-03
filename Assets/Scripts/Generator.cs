@@ -19,8 +19,6 @@ public class Generator : MonoBehaviour
     private GameObject[,,] mapObjs;
     private bool[,,] objExistsOnMap;
 
-
-
     private float scale = 5;
 
     private float blockDistance;
@@ -138,12 +136,12 @@ public class Generator : MonoBehaviour
     }
     void GenerateRandomBlocks()
     {
-        Method3();
-        Method2();
+        GenerateBasedOnPresets();
+        GenerateTotallyRandom();
 
     }
 
-    void Method2()
+    void GenerateTotallyRandom()
     {
         //int a = Random.Range(maxMapSize/3, maxMapSize/2);
         int size = randomParticlesNumber;
@@ -177,7 +175,7 @@ public class Generator : MonoBehaviour
         return false;
     }
 
-    void Method3()
+    void GenerateBasedOnPresets()
     {
         float prob = 0f;
         
@@ -195,9 +193,7 @@ public class Generator : MonoBehaviour
             {
                 (int, int, int) coords = GenerateRandomCoordinate();
                 InsertPreset((Preset) presetBank.toadPreset, coords.Item1, coords.Item2, coords.Item3);
-
             }
-                
         }
     }
 
