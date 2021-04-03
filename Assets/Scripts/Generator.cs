@@ -143,7 +143,7 @@ public class Generator : MonoBehaviour
     void GenerateRandomBlocks()
     {
         Method3();
-        Method2();
+        //Method2();
 
     }
 
@@ -210,51 +210,49 @@ public class Generator : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
             int k = Random.Range(0, 50);
-            if (k%5 == 0)
+            if (k%11 == 0)
             {
                 float m = Random.Range(0f, 1f);
-                if (m < presetBank.blinkerPreset.probability)
-                {
-                    int randX = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
-                    int randY = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
-                    InsertBlinker(randX, randY);
-                }
+                //if (m < presetBank.blinkerPreset.probability)
+                //{
+                    (int, int) coords = GenerateRandomCoordinate();
+                    InsertPreset((Preset) presetBank.blinkerPreset, coords.Item1, coords.Item2);
+                //}
             }
 
-            else if (k % 3 ==0)
+            else if (k % 2 == 0)
             {
                 float m = Random.Range(0f, 1f);
-                if (m < presetBank.toadPreset.probability)
-                {
-                    int randX = Random.Range(padding + presetBank.toadPreset.radius, maxMapSize - padding - presetBank.toadPreset.radius);
-                    int randY = Random.Range(padding + presetBank.toadPreset.radius, maxMapSize - padding - presetBank.toadPreset.radius);
-                    InsertToad(randX, randY);
-                }
+                //if (m < presetBank.toadPreset.probability)
+                //{
+                (int, int) coords = GenerateRandomCoordinate();
+
+                InsertPreset((Preset) presetBank.toadPreset, coords.Item1, coords.Item2);
+
+                //}
             }
                 
         }
     }
 
-    void InsertBlinker(int rx, int ry)
+    void InsertPreset(Preset presetObject, int rx, int rz)
     {
-        for (int x = 0; x < presetBank.blinkerPreset.radius; x++)
+        
+        for (int x = 0; x < presetObject.radius; x++)
         {
-            for (int y = 0; y < presetBank.blinkerPreset.radius; y++)
+            for (int z = 0; z < presetObject.radius; z++)
             {
-                map[rx + x, ry + y] = presetBank.blinkerPreset.map[x, y];
+                map[rx + x, rz + z] = presetObject.map[x, z];
             }
         }
     }
 
-    void InsertToad(int rx, int ry)
+    (int, int) GenerateRandomCoordinate()
     {
-        for (int x = 0; x < presetBank.toadPreset.radius; x++)
-        {
-            for (int y = 0; y < presetBank.toadPreset.radius; y++)
-            {
-                map[rx + x, ry + y] = presetBank.toadPreset.map[x, y];
-            }
-        }
+        int randX = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
+        int randZ = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
+
+        return (randX, randZ);
     }
 }
 
