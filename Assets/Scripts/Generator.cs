@@ -205,29 +205,34 @@ public class Generator : MonoBehaviour
         {
             prob = Random.Range(0f, 1f);
 
-
             if (prob > presetBank.pulsarPreset.probability)
             {
-                (int, int, int) coords = GenerateRandomCoordinate();
-                InsertPreset((Preset)presetBank.pulsarPreset, coords.Item1, coords.Item2, coords.Item3);
+                (int, int, int) coords = GenerateRandomCoordinate(presetBank.pulsarPreset.radius);
+                InsertPreset((Preset) presetBank.pulsarPreset, coords.Item1, coords.Item2, coords.Item3);
+            }
+
+            else if (prob > presetBank.pentaPreset.probability)
+            {
+                (int, int, int) coords = GenerateRandomCoordinate(presetBank.pentaPreset.radius);
+                InsertPreset((Preset) presetBank.pentaPreset, coords.Item1, coords.Item2, coords.Item3);
             }
 
             else if (prob > presetBank.blinkerPreset.probability)
             {
-                (int, int, int) coords = GenerateRandomCoordinate();
+                (int, int, int) coords = GenerateRandomCoordinate(presetBank.blinkerPreset.radius);
                 InsertPreset((Preset) presetBank.blinkerPreset, coords.Item1, coords.Item2, coords.Item3);
             }
 
-            else if (prob > presetBank.toadPreset.probability)
+            else if(prob > presetBank.toadPreset.probability)
             {
-                (int, int, int) coords = GenerateRandomCoordinate();
+                (int, int, int) coords = GenerateRandomCoordinate(presetBank.toadPreset.radius);
                 InsertPreset((Preset) presetBank.toadPreset, coords.Item1, coords.Item2, coords.Item3);
             }
 
-            else if (prob > presetBank.beaconPreset.probability)
+            else if(prob > presetBank.beaconPreset.probability)
             {
-                (int, int, int) coords = GenerateRandomCoordinate();
-                InsertPreset((Preset)presetBank.beaconPreset, coords.Item1, coords.Item2, coords.Item3);
+                (int, int, int) coords = GenerateRandomCoordinate(presetBank.beaconPreset.radius);
+                InsertPreset((Preset) presetBank.beaconPreset, coords.Item1, coords.Item2, coords.Item3);
             }
 
             
@@ -246,11 +251,11 @@ public class Generator : MonoBehaviour
         }
     }
 
-    (int, int, int) GenerateRandomCoordinate()
+    (int, int, int) GenerateRandomCoordinate(int radius)
     {
-        int randX = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
+        int randX = Random.Range(padding + radius, maxMapSize - padding - radius);
         int randY = Random.Range(0, maxMapHeight - 1);
-        int randZ = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
+        int randZ = Random.Range(padding + radius, maxMapSize - padding - radius);
 
         return (randX, randY, randZ);
     }
@@ -269,6 +274,7 @@ public class PresetBank
     public Toad toadPreset;
     public Beacon beaconPreset;
     public Pulsar pulsarPreset;
+    public Pentadecathlon pentaPreset;
 
     public PresetBank()
     {
@@ -276,6 +282,7 @@ public class PresetBank
         toadPreset = new Toad();
         beaconPreset = new Beacon();
         pulsarPreset = new Pulsar();
+        pentaPreset = new Pentadecathlon();
 
     }
 }
@@ -283,7 +290,7 @@ public class Blinker : Preset
 {
     public Blinker()
     {
-        probability = 0.3f;
+        probability = 0.4f;
         radius = 3;
 
         map = new bool[radius, radius];
@@ -316,7 +323,7 @@ public class Beacon : Preset
 {
     public Beacon()
     {
-        probability = 0.2f;
+        probability = 0.5f;
         radius = 4;
 
         map = new bool[radius, radius];
@@ -334,7 +341,7 @@ public class Pulsar : Preset
 {
     public Pulsar()
     {
-        probability = 0.3f;
+        probability = 0.7f;
         radius = 13;
 
         map = new bool[radius, radius];
@@ -387,6 +394,45 @@ public class Pulsar : Preset
         map[9, 12] = true;
         map[10, 12] = true;
 
+
+    }
+}
+
+public class Pentadecathlon : Preset
+{
+    public Pentadecathlon()
+    {
+        probability = 0.6f;
+        radius = 12;
+
+        map = new bool[radius, radius];
+
+        map[1, 0] = true;
+        map[2, 0] = true;
+        map[3, 0] = true;
+        
+        map[0, 1] = true;
+        map[4, 1] = true;
+        map[0, 2] = true;
+        map[4, 2] = true;
+
+        map[1, 3] = true;
+        map[2, 3] = true;
+        map[3, 3] = true;
+
+
+        map[1, 8] = true;
+        map[2, 8] = true;
+        map[3, 8] = true;
+
+        map[0, 9] = true;
+        map[4, 9] = true;
+        map[0, 10] = true;
+        map[4, 10] = true;
+
+        map[1, 11] = true;
+        map[2, 11] = true;
+        map[3, 11] = true;
 
     }
 }

@@ -173,7 +173,7 @@ MonoBehaviour:
   maxMapHeight: 10
   padding: 3
   cubeMargin: 5
-  randomParticlesNumber: 2000
+  randomParticlesNumber: 0
   presetStructuresNumber: 100
 --- !u!1 &705507993
 GameObject:
