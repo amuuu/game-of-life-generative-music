@@ -205,7 +205,7 @@ public class Generator : MonoBehaviour
     {
         for (int i = 0; i < 20; i++)
         {
-            int k = Random.Range(0, 20);
+            int k = Random.Range(0, 50);
             if (k%5 == 0)
             {
                 float m = Random.Range(0f, 1f);
@@ -213,17 +213,43 @@ public class Generator : MonoBehaviour
                 {
                     int randX = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
                     int randY = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
+                    InsertBlinker(randX, randY);
+                }
+            }
 
-                    for (int x=0; x< presetBank.blinkerPreset.radius; x++)
-                    {
-                        for (int y = 0; y < presetBank.blinkerPreset.radius; y++)
-                        {
-                            map[randX + x, randY + y] = presetBank.blinkerPreset.map[x, y];
-                        }
-                    }
+            else if (k % 3 ==0)
+            {
+                float m = Random.Range(0f, 1f);
+                if (m < presetBank.toadPreset.probability)
+                {
+                    int randX = Random.Range(padding + presetBank.toadPreset.radius, maxMapSize - padding - presetBank.toadPreset.radius);
+                    int randY = Random.Range(padding + presetBank.toadPreset.radius, maxMapSize - padding - presetBank.toadPreset.radius);
+                    InsertToad(randX, randY);
                 }
             }
                 
+        }
+    }
+
+    void InsertBlinker(int rx, int ry)
+    {
+        for (int x = 0; x < presetBank.blinkerPreset.radius; x++)
+        {
+            for (int y = 0; y < presetBank.blinkerPreset.radius; y++)
+            {
+                map[rx + x, ry + y] = presetBank.blinkerPreset.map[x, y];
+            }
+        }
+    }
+
+    void InsertToad(int rx, int ry)
+    {
+        for (int x = 0; x < presetBank.toadPreset.radius; x++)
+        {
+            for (int y = 0; y < presetBank.toadPreset.radius; y++)
+            {
+                map[rx + x, ry + y] = presetBank.toadPreset.map[x, y];
+            }
         }
     }
 }
@@ -238,10 +264,13 @@ public class Preset
 public class PresetBank
 {
     public Blinker blinkerPreset;
+    public Toad toadPreset;
+
 
     public PresetBank()
     {
         blinkerPreset = new Blinker();
+        toadPreset = new Toad();
     }
 }
 public class Blinker : Preset
@@ -256,5 +285,23 @@ public class Blinker : Preset
         map[1, 0] = true;
         map[1, 1] = true;
         map[1, 2] = true;
+    }
+}
+
+public class Toad : Preset
+{
+    public Toad()
+    {
+        probability = 0.5f;
+        radius = 4;
+
+        map = new bool[radius, radius];
+
+        map[1, 0] = true;
+        map[1, 1] = true;
+        map[1, 2] = true;
+        map[2, 1] = true;
+        map[2, 2] = true;
+        map[2, 3] = true;
     }
 }
