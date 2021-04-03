@@ -78,7 +78,11 @@ public class Generator : MonoBehaviour
 
         if (newMap[x, y])
         {
+
             mapObjs[x, y] = Instantiate(cubePrefab, new Vector3(x * blockDistance, 0, y * blockDistance), Quaternion.identity);
+            
+            mapObjs[x, y].GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
+
         }
     }
 
