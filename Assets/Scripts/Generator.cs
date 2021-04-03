@@ -6,16 +6,17 @@ public class Generator : MonoBehaviour
 {
     public GameObject cubePrefab;
     public GameObject empty_;
-    public int maxMapSize;
+    public int maxMapSize; // 50
+    public int padding; // 3
+    public float cubeMargin; // 3
+
 
     private bool[,] map;
     private bool[,] newMap;
 
     private GameObject[,] mapObjs;
 
-    private int padding = 3;
 
-    private float margin = 3;
     private float scale = 5;
 
     private float blockDistance;
@@ -26,7 +27,7 @@ public class Generator : MonoBehaviour
     {
         canCont = false;
 
-        blockDistance = scale + margin;
+        blockDistance = scale + cubeMargin;
 
         mapObjs = new GameObject[maxMapSize, maxMapSize];
         newMap = new bool[maxMapSize, maxMapSize];

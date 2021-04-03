@@ -168,6 +168,8 @@ MonoBehaviour:
     type: 3}
   empty_: {fileID: 1697701895}
   maxMapSize: 50
+  padding: 3
+  cubeMargin: 3
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
