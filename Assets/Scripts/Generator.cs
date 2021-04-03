@@ -14,6 +14,7 @@ public class Generator : MonoBehaviour
 
     public int padding; // 3
     public float cubeMargin; // 3
+
     public int randomParticlesNumber; //300
     public int presetStructuresNumber; // 50
 
@@ -200,21 +201,36 @@ public class Generator : MonoBehaviour
     {
         float prob = 0f;
         
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < presetStructuresNumber; i++)
         {
             prob = Random.Range(0f, 1f);
 
-            if (prob > presetBank.blinkerPreset.probability)
+
+            if (prob > presetBank.pulsarPreset.probability)
+            {
+                (int, int, int) coords = GenerateRandomCoordinate();
+                InsertPreset((Preset)presetBank.pulsarPreset, coords.Item1, coords.Item2, coords.Item3);
+            }
+
+            else if (prob > presetBank.blinkerPreset.probability)
             {
                 (int, int, int) coords = GenerateRandomCoordinate();
                 InsertPreset((Preset) presetBank.blinkerPreset, coords.Item1, coords.Item2, coords.Item3);
             }
 
-            if (prob > presetBank.toadPreset.probability)
+            else if (prob > presetBank.toadPreset.probability)
             {
                 (int, int, int) coords = GenerateRandomCoordinate();
                 InsertPreset((Preset) presetBank.toadPreset, coords.Item1, coords.Item2, coords.Item3);
             }
+
+            else if (prob > presetBank.beaconPreset.probability)
+            {
+                (int, int, int) coords = GenerateRandomCoordinate();
+                InsertPreset((Preset)presetBank.beaconPreset, coords.Item1, coords.Item2, coords.Item3);
+            }
+
+            
         }
     }
 
@@ -251,12 +267,16 @@ public class PresetBank
 {
     public Blinker blinkerPreset;
     public Toad toadPreset;
-
+    public Beacon beaconPreset;
+    public Pulsar pulsarPreset;
 
     public PresetBank()
     {
         blinkerPreset = new Blinker();
         toadPreset = new Toad();
+        beaconPreset = new Beacon();
+        pulsarPreset = new Pulsar();
+
     }
 }
 public class Blinker : Preset
@@ -289,5 +309,84 @@ public class Toad : Preset
         map[2, 1] = true;
         map[2, 2] = true;
         map[2, 3] = true;
+    }
+}
+
+public class Beacon : Preset
+{
+    public Beacon()
+    {
+        probability = 0.2f;
+        radius = 4;
+
+        map = new bool[radius, radius];
+
+        map[2, 0] = true;
+        map[3, 0] = true;
+        map[3, 1] = true;
+        map[0, 2] = true;
+        map[0, 3] = true;
+        map[1, 3] = true;
+    }
+}
+
+public class Pulsar : Preset
+{
+    public Pulsar()
+    {
+        probability = 0.3f;
+        radius = 13;
+
+        map = new bool[radius, radius];
+
+        map[2, 0] = true;
+        map[3, 0] = true;
+        map[4, 0] = true;
+        map[8, 0] = true;
+        map[9, 0] = true;
+        map[10, 0] = true;
+        
+        map[0, 2] = true;
+        map[5, 2] = true;
+        map[12, 2] = true;
+        map[0, 3] = true;
+        map[5, 3] = true;
+        map[12, 3] = true;
+        map[0, 4] = true;
+        map[5, 4] = true;
+        map[12, 4] = true;
+
+        map[2, 5] = true;
+        map[3, 5] = true;
+        map[4, 5] = true;
+        map[8, 5] = true;
+        map[9, 5] = true;
+        map[10, 5] = true;
+
+        map[2, 7] = true;
+        map[3, 7] = true;
+        map[4, 7] = true;
+        map[8, 7] = true;
+        map[9, 7] = true;
+        map[10, 7] = true;
+
+        map[0, 8] = true;
+        map[5, 8] = true;
+        map[12, 8] = true;
+        map[0, 9] = true;
+        map[5, 9] = true;
+        map[12, 9] = true;
+        map[0, 10] = true;
+        map[5, 10] = true;
+        map[12, 10] = true;
+
+        map[2, 12] = true;
+        map[3, 12] = true;
+        map[4, 12] = true;
+        map[8, 12] = true;
+        map[9, 12] = true;
+        map[10, 12] = true;
+
+
     }
 }

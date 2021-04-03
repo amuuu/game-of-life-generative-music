@@ -172,7 +172,7 @@ MonoBehaviour:
   maxMapSize: 50
   maxMapHeight: 10
   padding: 3
-  cubeMargin: 3
+  cubeMargin: 5
   randomParticlesNumber: 2000
   presetStructuresNumber: 100
 --- !u!1 &705507993
@@ -456,7 +456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementRate: 10
-  rotationRate: 4
+  rotationRate: 2
 --- !u!1 &1096342581
 GameObject:
   m_ObjectHideFlags: 0
