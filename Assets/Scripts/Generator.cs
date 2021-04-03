@@ -23,12 +23,16 @@ public class Generator : MonoBehaviour
 
     private bool canCont;
 
+    private PresetBank presetBank;
+
     void Start()
     {
         canCont = false;
 
         blockDistance = scale + cubeMargin;
 
+        presetBank = new PresetBank();
+        
         mapObjs = new GameObject[maxMapSize, maxMapSize];
         newMap = new bool[maxMapSize, maxMapSize];
         map = new bool[maxMapSize, maxMapSize];
@@ -134,7 +138,9 @@ public class Generator : MonoBehaviour
     }
     void GenerateRandomBlocks()
     {
+        Method3();
         Method2();
+
     }
 
     void Method1()
@@ -193,5 +199,62 @@ public class Generator : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    void Method3()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            int k = Random.Range(0, 20);
+            if (k%5 == 0)
+            {
+                float m = Random.Range(0f, 1f);
+                if (m < presetBank.blinkerPreset.probability)
+                {
+                    int randX = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
+                    int randY = Random.Range(padding + presetBank.blinkerPreset.radius, maxMapSize - padding - presetBank.blinkerPreset.radius);
+
+                    for (int x=0; x< presetBank.blinkerPreset.radius; x++)
+                    {
+                        for (int y = 0; y < presetBank.blinkerPreset.radius; y++)
+                        {
+                            map[randX + x, randY + y] = presetBank.blinkerPreset.map[x, y];
+                        }
+                    }
+                }
+            }
+                
+        }
+    }
+}
+
+public class Preset
+{
+    public bool[,] map;
+    public float probability;
+    public int radius;
+}
+
+public class PresetBank
+{
+    public Blinker blinkerPreset;
+
+    public PresetBank()
+    {
+        blinkerPreset = new Blinker();
+    }
+}
+public class Blinker : Preset
+{
+    public Blinker()
+    {
+        probability = 0.3f;
+        radius = 3;
+
+        map = new bool[radius, radius];
+
+        map[1, 0] = true;
+        map[1, 1] = true;
+        map[1, 2] = true;
     }
 }
