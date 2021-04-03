@@ -8,6 +8,7 @@ public class Generator : MonoBehaviour
     public int maxMapSize; // 50
     public int padding; // 3
     public float cubeMargin; // 3
+    public int numberOfParticles; //300
 
 
     private bool[,] map;
@@ -161,7 +162,7 @@ public class Generator : MonoBehaviour
     void Method2()
     {
         //int a = Random.Range(maxMapSize/3, maxMapSize/2);
-        int size = 300;
+        int size = numberOfParticles;
         List<(int,int)> already = new List<(int, int)>();
         
 
@@ -189,8 +190,8 @@ public class Generator : MonoBehaviour
         foreach ((int,int) item in list)
         {
             if (item.Equals(target))
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 }
