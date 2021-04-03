@@ -5,6 +5,10 @@ using UnityEngine;
 public class Generator : MonoBehaviour
 {
     public GameObject cubePrefab;
+    public GameObject cubePrefab2;
+
+    public float generationCycleDelay; // 0.5
+
     public int maxMapSize; // 50
     public int maxMapHeight; // 10
 
@@ -25,8 +29,12 @@ public class Generator : MonoBehaviour
 
     private PresetBank presetBank;
 
+    private float timeToGo;
+
     void Start()
     {
+        timeToGo = Time.fixedTime + generationCycleDelay;
+
         blockDistance = scale + cubeMargin;
 
         presetBank = new PresetBank();
@@ -45,7 +53,16 @@ public class Generator : MonoBehaviour
 
     }
 
-    void Update()
+    void FixedUpdate()
+    {
+        if (Time.fixedTime >= timeToGo)
+        {
+            AdvanceGeneration();
+            timeToGo = Time.fixedTime + generationCycleDelay;
+        }
+    }
+
+    void AdvanceGeneration()
     {
         for (int i = padding; i < maxMapSize - padding; i++)
         {
@@ -54,13 +71,13 @@ public class Generator : MonoBehaviour
                 for (int k = padding; k < maxMapSize - padding; k++)
                 {
                     newMap[i, j, k] = UpdateCellState(i, j, k);
-                
+
                     UpdateDisplay(i, j, k);
                 }
             }
         }
-        
-        map = (bool[,,]) newMap.Clone();
+
+        map = (bool[,,])newMap.Clone();
     }
 
     void UpdateDisplay(int x, int y, int z)
@@ -73,7 +90,11 @@ public class Generator : MonoBehaviour
 
         if (newMap[x, y, z])
         {
-            mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * (blockDistance+1), z * blockDistance), Quaternion.identity);
+            if (y % 2 == 0)
+                mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * (blockDistance+1), z * blockDistance), Quaternion.identity);
+            else
+                mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(x * blockDistance, y * (blockDistance + 1), z * blockDistance), Quaternion.identity);
+
             objExistsOnMap[x, y, z] = true;
             //mapObjs[x, y, z].GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
 

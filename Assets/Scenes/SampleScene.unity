@@ -166,6 +166,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cubePrefab: {fileID: 965201906600678173, guid: f50fc51fdeb863440afad2f490e5adc1,
     type: 3}
+  cubePrefab2: {fileID: 3830003512957174274, guid: d6038a564d4dcc842bda12353b753fa5,
+    type: 3}
+  generationCycleDelay: 0.1
   maxMapSize: 50
   maxMapHeight: 10
   padding: 3
@@ -452,7 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfd2328f9a888004696d6a4f29d65a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementRate: 50
+  movementRate: 10
   rotationRate: 4
 --- !u!1 &1096342581
 GameObject:
