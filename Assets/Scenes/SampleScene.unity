@@ -166,11 +166,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cubePrefab: {fileID: 965201906600678173, guid: f50fc51fdeb863440afad2f490e5adc1,
     type: 3}
-  maxMapSize: 50
+  maxMapSize: 100
   maxMapHeight: 10
   padding: 3
   cubeMargin: 3
-  numberOfParticles: 2000
+  randomParticlesNumber: 1000
+  presetStructuresNumber: 50
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

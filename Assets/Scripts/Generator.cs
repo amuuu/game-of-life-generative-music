@@ -10,8 +10,8 @@ public class Generator : MonoBehaviour
 
     public int padding; // 3
     public float cubeMargin; // 3
-    public int numberOfParticles; //300
-
+    public int randomParticlesNumber; //300
+    public int presetStructuresNumber; // 50
 
     private bool[,,] map;
     private bool[,,] newMap;
@@ -139,14 +139,14 @@ public class Generator : MonoBehaviour
     void GenerateRandomBlocks()
     {
         Method3();
-        //Method2();
+        Method2();
 
     }
 
     void Method2()
     {
         //int a = Random.Range(maxMapSize/3, maxMapSize/2);
-        int size = numberOfParticles;
+        int size = randomParticlesNumber;
         List<(int, int, int)> already = new List<(int, int, int)>();
 
         int x, y, z;
@@ -180,7 +180,7 @@ public class Generator : MonoBehaviour
     void Method3()
     {
         float prob = 0f;
-
+        
         for (int i = 0; i < 20; i++)
         {
             prob = Random.Range(0f, 1f);
