@@ -17,6 +17,8 @@ public class Generator : MonoBehaviour
     private bool[,,] newMap;
 
     private GameObject[,,] mapObjs;
+    private bool[,,] objExistsOnMap;
+
 
 
     private float scale = 5;
@@ -34,6 +36,8 @@ public class Generator : MonoBehaviour
         mapObjs = new GameObject[maxMapSize, maxMapHeight, maxMapSize];
         newMap = new bool[maxMapSize, maxMapHeight, maxMapSize];
         map = new bool[maxMapSize, maxMapHeight, maxMapSize];
+        objExistsOnMap = new bool[maxMapSize, maxMapHeight, maxMapSize];
+
 
         GenerateRandomBlocks();
 
@@ -63,14 +67,16 @@ public class Generator : MonoBehaviour
 
     void UpdateDisplay(int x, int y, int z)
     {
-        Debug.Log("COORD: " + x + ", " + y + ", " + z);
-        Destroy(mapObjs[x, y, z]);
+        if (objExistsOnMap[x, y, z])
+        {
+            Destroy(mapObjs[x, y, z]);
+            objExistsOnMap[x, y, z] = false;
+        }
 
         if (newMap[x, y, z])
         {
-
             mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * (blockDistance+1), z * blockDistance), Quaternion.identity);
-            
+            objExistsOnMap[x, y, z] = true;
             //mapObjs[x, y, z].GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
 
         }
