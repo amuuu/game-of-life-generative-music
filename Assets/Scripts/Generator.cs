@@ -5,7 +5,6 @@ using UnityEngine;
 public class Generator : MonoBehaviour
 {
     public GameObject cubePrefab;
-    public GameObject empty_;
     public int maxMapSize; // 50
     public int padding; // 3
     public float cubeMargin; // 3
@@ -102,8 +101,6 @@ public class Generator : MonoBehaviour
         if (newMap[x, y])
         {
             mapObjs[x, y] = Instantiate(cubePrefab, new Vector3(x * blockDistance, 0, y * blockDistance), Quaternion.identity);
-
-            
         }
     }
 
