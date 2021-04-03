@@ -21,14 +21,10 @@ public class Generator : MonoBehaviour
 
     private float blockDistance;
 
-    private bool canCont;
-
     private PresetBank presetBank;
 
     void Start()
     {
-        canCont = false;
-
         blockDistance = scale + cubeMargin;
 
         presetBank = new PresetBank();
@@ -47,14 +43,6 @@ public class Generator : MonoBehaviour
 
     void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.Space))
-            canCont = !canCont;
-        */
-        
-        //if (canCont)
-        //{
-        
         for (int i = padding; i < maxMapSize - padding; i++)
         {
             for (int k = padding; k < maxMapSize - padding; k++)
@@ -66,10 +54,6 @@ public class Generator : MonoBehaviour
         }
         
         map = (bool[,]) newMap.Clone();
-            
-        canCont = false;
-        
-        //}
     }
 
     void UpdateDisplay(int x, int z)
@@ -182,29 +166,22 @@ public class Generator : MonoBehaviour
 
     void Method3()
     {
+        float prob = 0f;
         for (int i = 0; i < 20; i++)
         {
-            int k = Random.Range(0, 50);
-            if (k%11 == 0)
+            prob = Random.Range(0f, 1f);
+
+            if (prob > presetBank.blinkerPreset.probability)
             {
-                float m = Random.Range(0f, 1f);
-                //if (m < presetBank.blinkerPreset.probability)
-                //{
-                    (int, int) coords = GenerateRandomCoordinate();
-                    InsertPreset((Preset) presetBank.blinkerPreset, coords.Item1, coords.Item2);
-                //}
+                (int, int) coords = GenerateRandomCoordinate();
+                InsertPreset((Preset) presetBank.blinkerPreset, coords.Item1, coords.Item2);
             }
 
-            else if (k % 2 == 0)
+            if (prob > presetBank.toadPreset.probability)
             {
-                float m = Random.Range(0f, 1f);
-                //if (m < presetBank.toadPreset.probability)
-                //{
                 (int, int) coords = GenerateRandomCoordinate();
-
                 InsertPreset((Preset) presetBank.toadPreset, coords.Item1, coords.Item2);
 
-                //}
             }
                 
         }
