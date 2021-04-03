@@ -32,34 +32,11 @@ public class Generator : MonoBehaviour
         newMap = new bool[maxMapSize, maxMapSize];
         map = new bool[maxMapSize, maxMapSize];
 
-        map[7, 5] = true;
-        map[8, 5] = true;
-        map[9, 5] = true;
-        map[10, 5] = true;
-        map[6, 6] = true;
-        map[7, 6] = true;
-        map[8, 6] = true;
-        map[9, 6] = true;
-        map[10, 6] = true;
-        map[11, 6] = true;
-        map[6, 7] = true;
-        map[7, 7] = true;
-        map[8, 7] = true;
-        map[9, 7] = true;
-        map[11, 7] = true;
-        map[12, 7] = true;
-        map[10, 8] = true;
-        map[11, 8] = true;
+        GenerateRandomBlocks();
 
         newMap = (bool[,]) map.Clone();
 
-        for (int i = padding; i < maxMapSize - padding; i++)
-        {
-            for (int j = padding; j < maxMapSize - padding; j++)
-            {
-                UpdateDisplay(i, j);
-            }
-        }
+        InitDisplay();
 
     }
 
@@ -113,17 +90,17 @@ public class Generator : MonoBehaviour
 
         if (map[x, y] && (neighCounter == 2 || neighCounter == 3))
         {
-            Debug.Log("Shit  for " + x + ", " + y );
+            //Debug.Log("Shit  for " + x + ", " + y );
             return true;
         }
         else if(!map[x, y] && (neighCounter == 3))
         {
-            Debug.Log("Woah for  " + x + ", " + y);
+            //Debug.Log("Woah for  " + x + ", " + y);
             return true;
         }
         else
         {
-            Debug.Log("No Shit");
+            //Debug.Log("No Shit");
             return false;
         }
     }
@@ -142,5 +119,78 @@ public class Generator : MonoBehaviour
         neighs[7] = map[x - 1, y + 1]; // ul
 
         return neighs;
+    }
+
+    void InitDisplay()
+    {
+        for (int i = padding; i < maxMapSize - padding; i++)
+        {
+            for (int j = padding; j < maxMapSize - padding; j++)
+            {
+                UpdateDisplay(i, j);
+            }
+        }
+    }
+    void GenerateRandomBlocks()
+    {
+        Method2();
+    }
+
+    void Method1()
+    {
+        map[7, 5] = true;
+        map[8, 5] = true;
+        map[9, 5] = true;
+        map[10, 5] = true;
+        map[6, 6] = true;
+        map[7, 6] = true;
+        map[8, 6] = true;
+        map[9, 6] = true;
+        map[10, 6] = true;
+        map[11, 6] = true;
+        map[6, 7] = true;
+        map[7, 7] = true;
+        map[8, 7] = true;
+        map[9, 7] = true;
+        map[11, 7] = true;
+        map[12, 7] = true;
+        map[10, 8] = true;
+        map[11, 8] = true;
+    }
+
+    void Method2()
+    {
+        //int a = Random.Range(maxMapSize/3, maxMapSize/2);
+        int size = 300;
+        List<(int,int)> already = new List<(int, int)>();
+        
+
+        for (int i=0; i< size; i++)
+        {
+            int x = Random.Range(padding + 1, maxMapSize/2);
+            int y = Random.Range(padding + 1, maxMapSize/2);
+            while (_AlreadyExists(already, (x,y)))
+            {
+                x = Random.Range(padding + 1, maxMapSize / 2);
+                y = Random.Range(padding + 1, maxMapSize / 2);
+            }
+            
+            already.Add((x, y));
+
+            //Debug.Log("X, Y: " + x + "  " + y);
+            map[x, y] = true;
+        }
+        newMap = (bool[,]) map.Clone();
+
+    }
+
+    bool _AlreadyExists(List<(int,int)> list, (int,int)target)
+    {
+        foreach ((int,int) item in list)
+        {
+            if (item.Equals(target))
+                return false;
+        }
+        return true;
     }
 }
