@@ -53,14 +53,11 @@ public class Generator : MonoBehaviour
 
         newMap = (bool[,]) map.Clone();
 
-
         for (int i = padding; i < maxMapSize - padding; i++)
         {
             for (int j = padding; j < maxMapSize - padding; j++)
             {
-
                 UpdateDisplay(i, j);
-
             }
         }
 
@@ -81,8 +78,7 @@ public class Generator : MonoBehaviour
             for (int j = padding; j < maxMapSize - padding; j++)
             {
                 newMap[i, j] = UpdateCellState(i, j);
-                if(i==6 && j==6)
-                    Debug.Log("BRUH: " + newMap[i, j]);
+                
                 UpdateDisplay(i, j);
             }
         }
