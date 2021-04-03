@@ -68,27 +68,30 @@ public class Generator : MonoBehaviour
 
     void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Space))
             canCont = !canCont;
+        */
         
+        //if (canCont)
+        //{
         
-        if (canCont)
+        for (int i = padding; i < maxMapSize - padding; i++)
         {
-            for (int i = padding; i < maxMapSize - padding; i++)
+            for (int j = padding; j < maxMapSize - padding; j++)
             {
-                for (int j = padding; j < maxMapSize - padding; j++)
-                {
-                    newMap[i, j] = UpdateCellState(i, j);
-                    if(i==6 && j==6)
-                        Debug.Log("BRUH: " + newMap[i, j]);
-                    UpdateDisplay(i, j);
-                }
+                newMap[i, j] = UpdateCellState(i, j);
+                if(i==6 && j==6)
+                    Debug.Log("BRUH: " + newMap[i, j]);
+                UpdateDisplay(i, j);
             }
-            //map = newMap;
-            map = (bool[,]) newMap.Clone();
-            
-            canCont = false;
         }
+        
+        map = (bool[,]) newMap.Clone();
+            
+        canCont = false;
+        
+        //}
     }
 
     void UpdateDisplay(int x, int y)
@@ -101,11 +104,6 @@ public class Generator : MonoBehaviour
 
             
         }
-        /*else
-        {
-            Destroy(mapObjs[x, y]);
-            mapObjs[x, y] = empty_;
-        }*/
     }
 
     bool UpdateCellState(int x, int y)
