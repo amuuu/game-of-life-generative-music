@@ -69,7 +69,7 @@ public class Generator : MonoBehaviour
         if (newMap[x, y, z])
         {
 
-            mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * blockDistance, z * blockDistance), Quaternion.identity);
+            mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * (blockDistance+1), z * blockDistance), Quaternion.identity);
             
             //mapObjs[x, y, z].GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
 
@@ -121,7 +121,7 @@ public class Generator : MonoBehaviour
     {
         for (int i = padding; i < maxMapSize - padding; i++)
         {
-            for (int j = 0; i < maxMapHeight; j++)
+            for (int j = 0; j < maxMapHeight; j++)
             {
                 for (int k = padding; k < maxMapSize - padding; k++)
                 {
@@ -144,7 +144,7 @@ public class Generator : MonoBehaviour
         List<(int, int, int)> already = new List<(int, int, int)>();
 
         int x, y, z;
-        for (int i=0; i< size; i++)
+        for (int i=0; i < size; i++)
         {
             do {
                 x = Random.Range(padding + 1, maxMapSize / 2);
