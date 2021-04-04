@@ -483,11 +483,11 @@ MonoBehaviour:
   cameraTransform: {fileID: 963194228}
   mainCamera: {fileID: 963194225}
   birdsEye: {fileID: 351376116}
-  normalSpeed: 5
+  normalSpeed: 2
   fastSpeed: 15
   movementSpeed: 10
   movementTime: 10
-  rotationAmount: 1.5
+  rotationAmount: 0.5
   zoomAmount: {x: 5, y: 5, z: 5}
   minZoom: 10
   maxZoom: 20
