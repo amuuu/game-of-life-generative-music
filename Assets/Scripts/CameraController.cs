@@ -3,6 +3,8 @@
 public class CameraController : MonoBehaviour
 {
     public Transform cameraTransform;
+    public GameObject mainCamera;
+    public GameObject birdsEye;
 
     public float normalSpeed;
     public float fastSpeed;
@@ -11,24 +13,23 @@ public class CameraController : MonoBehaviour
     public float rotationAmount;
     public Vector3 zoomAmount;
 
+    public float minZoom;
+    public float maxZoom;
+
     public Vector3 newPosition;
     public Quaternion newRotation;
     public Vector3 newZoom;
 
-    public Vector3 dragStartPosition;
-    public Vector3 dragCurrentPosition;
-    public Vector3 rotateStartPosition;
-    public Vector3 rotateCurrentPosition;
-
-    public float minZoom;
-    public float maxZoom;
-
+    private bool isMainActive;
 
     void Start()
     {
         newPosition = transform.position;
         newRotation = transform.rotation;
         newZoom = cameraTransform.localPosition;
+        
+        isMainActive = true;
+        birdsEye.SetActive(false);
     }
 
     void Update()
@@ -38,6 +39,23 @@ public class CameraController : MonoBehaviour
 
     void HandleMovementInput()
     {
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            if(isMainActive)
+            {
+                mainCamera.SetActive(false);
+                birdsEye.SetActive(true);
+                isMainActive = false;
+            }
+            else
+            {
+                mainCamera.SetActive(true);
+                birdsEye.SetActive(false);
+                isMainActive = true;
+            }
+        }
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
             movementSpeed = fastSpeed;
