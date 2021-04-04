@@ -170,11 +170,11 @@ MonoBehaviour:
     type: 3}
   generationCycleDelay: 0.15
   maxMapSize: 50
-  maxMapHeight: 20
+  maxMapHeight: 15
   padding: 3
   cubeMargin: 15
-  randomParticlesNumber: 100
-  presetStructuresNumber: 100
+  randomParticlesNumber: 200
+  presetStructuresNumber: 200
 --- !u!1 &351376116
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,7 +201,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 351376116}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1100, z: 0}
+  m_LocalPosition: {x: 0, y: 1000, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1271371435}
@@ -430,7 +430,7 @@ Transform:
   m_GameObject: {fileID: 1096342581}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -3.8007812, z: 0}
-  m_LocalScale: {x: 10000, y: 10000, z: 10000}
+  m_LocalScale: {x: 20000, y: 20000, z: 20000}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -487,8 +487,8 @@ MonoBehaviour:
   fastSpeed: 30
   movementSpeed: 10
   movementTime: 10
-  rotationAmount: 6
-  zoomAmount: {x: 0, y: 0, z: 0}
+  rotationAmount: 3
+  zoomAmount: {x: 5, y: 5, z: 5}
   minZoom: 10
   maxZoom: 20
   newPosition: {x: 4, y: 4, z: 4}
@@ -522,8 +522,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.6
+  m_Color: {r: 0.9103774, g: 0.9786613, b: 1, a: 1}
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -602,7 +602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1886449316
 Light:
   m_ObjectHideFlags: 0
