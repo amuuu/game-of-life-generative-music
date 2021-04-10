@@ -123,8 +123,11 @@ public class Generator : MonoBehaviour
 
     private bool IsInRadius(float radius, float x, float y, float z)
     {
-        if (Vector3.Distance(mainCamera.transform.position, new Vector3(x,y,z)) <= radius)
+        float distance = Vector3.Distance(mainCamera.transform.position, new Vector3(x, y, z));
+
+        if (Math.Floor(distance) < radius)
             return true;
+        
         return false;
     }
 
