@@ -176,7 +176,7 @@ MonoBehaviour:
   cubeMargin: 15
   randomParticlesNumber: 200
   presetStructuresNumber: 200
-  eyeSightRadius: 700
+  eyeSightRadius: 600
 --- !u!1 &351376116
 GameObject:
   m_ObjectHideFlags: 0

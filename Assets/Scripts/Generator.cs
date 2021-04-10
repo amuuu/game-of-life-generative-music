@@ -21,7 +21,7 @@ public class Generator : MonoBehaviour
     public int randomParticlesNumber; //300
     public int presetStructuresNumber; // 50
 
-    public int eyeSightRadius;
+    public int eyeSightRadius; //600
 
     private float scale = 5;
 
