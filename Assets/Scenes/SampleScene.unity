@@ -168,7 +168,7 @@ MonoBehaviour:
     type: 3}
   cubePrefab2: {fileID: 3830003512957174274, guid: d6038a564d4dcc842bda12353b753fa5,
     type: 3}
-  camera: {fileID: 963194227}
+  mainCamera: {fileID: 963194227}
   generationCycleDelay: 0.15
   maxMapSize: 70
   maxMapHeight: 15

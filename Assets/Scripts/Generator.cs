@@ -8,7 +8,7 @@ public class Generator : MonoBehaviour
     public GameObject cubePrefab;
     public GameObject cubePrefab2;
 
-    public Camera camera;
+    public Camera mainCamera;
 
     public float generationCycleDelay; // 0.5
 
@@ -35,6 +35,8 @@ public class Generator : MonoBehaviour
 
     private float timeToGo;
     private Renderer m_Renderer;
+
+    private float tmpXCoord, tmpYCoord, tmpZCoord;
 
     void Start()
     {
@@ -95,13 +97,16 @@ public class Generator : MonoBehaviour
 
         if (newMap[x, y, z])
         {
-
-            if (IsInFOV(x * blockDistance, y * (blockDistance+1), z * blockDistance))
+            tmpXCoord = x * blockDistance;
+            tmpYCoord = y * (blockDistance + 1);
+            tmpZCoord = z * blockDistance;
+            
+            if (IsInFOV(tmpXCoord, tmpYCoord, tmpZCoord))
             {
                 if (y % 2 == 0)
-                    mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * (blockDistance + 1), z * blockDistance), Quaternion.identity);
+                    mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
                 else
-                    mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(x * blockDistance, y * (blockDistance + 1), z * blockDistance), Quaternion.identity);
+                    mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
                 
                 objExistsOnMap[x, y, z] = true;
             }
@@ -112,7 +117,7 @@ public class Generator : MonoBehaviour
 
     private bool IsInFOV(float x, float y, float z)
     {
-        Vector3 screenPoint = camera.WorldToViewportPoint(new Vector3(x,y,z));
+        Vector3 screenPoint = mainCamera.WorldToViewportPoint(new Vector3(x,y,z));
         if (screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1)
             return true;
 
