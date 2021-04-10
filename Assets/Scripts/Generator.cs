@@ -34,7 +34,6 @@ public class Generator : MonoBehaviour
     private PresetBank presetBank;
 
     private float timeToGo;
-    private Renderer m_Renderer;
 
     private float tmpXCoord, tmpYCoord, tmpZCoord;
 
@@ -87,7 +86,7 @@ public class Generator : MonoBehaviour
         map = (bool[,,])newMap.Clone();
     }
 
-    void UpdateDisplay(int x, int y, int z)
+    private void UpdateDisplay(int x, int y, int z)
     {
         if (objExistsOnMap[x, y, z])
         {
@@ -124,7 +123,7 @@ public class Generator : MonoBehaviour
         return false;
     }
 
-    bool UpdateCellState(int x, int y, int z)
+    private bool UpdateCellState(int x, int y, int z)
     {
         bool[] neighs = GetNeighbors(x, y, z);
         int neighCounter = 0;
@@ -149,7 +148,7 @@ public class Generator : MonoBehaviour
         }
     }
 
-    bool[] GetNeighbors(int x, int y, int z)
+    private bool[] GetNeighbors(int x, int y, int z)
     {
         bool[] neighs = new bool[8];
 
@@ -165,7 +164,7 @@ public class Generator : MonoBehaviour
         return neighs;
     }
 
-    void InitDisplay()
+    private void InitDisplay()
     {
         for (int i = padding; i < maxMapSize - padding; i++)
         {
@@ -179,14 +178,14 @@ public class Generator : MonoBehaviour
         }
     }
 
-    void GenerateRandomBlocks()
+    private void GenerateRandomBlocks()
     {
         GenerateBasedOnPresets();
         GenerateTotallyRandom();
 
     }
 
-    void GenerateTotallyRandom()
+    private void GenerateTotallyRandom()
     {
         //int a = Random.Range(maxMapSize/3, maxMapSize/2);
         int size = randomParticlesNumber;
@@ -210,7 +209,7 @@ public class Generator : MonoBehaviour
 
     }
 
-    bool _AlreadyExists(List<(int, int, int)> list, (int, int, int) target)
+    private bool _AlreadyExists(List<(int, int, int)> list, (int, int, int) target)
     {
         foreach ((int, int, int) item in list)
         {
@@ -220,7 +219,7 @@ public class Generator : MonoBehaviour
         return false;
     }
 
-    void GenerateBasedOnPresets()
+    private void GenerateBasedOnPresets()
     {
         float prob = 0f;
         
@@ -262,7 +261,7 @@ public class Generator : MonoBehaviour
         }
     }
 
-    void InsertPreset(Preset presetObject, int rx, int ry, int rz)
+    private void InsertPreset(Preset presetObject, int rx, int ry, int rz)
     {
         
         for (int x = 0; x < presetObject.radius; x++)
@@ -274,7 +273,7 @@ public class Generator : MonoBehaviour
         }
     }
 
-    (int, int, int) GenerateRandomCoordinate(int radius)
+    private (int, int, int) GenerateRandomCoordinate(int radius)
     {
         int randX = UnityEngine.Random.Range(padding + radius, maxMapSize - padding - radius);
         int randY = UnityEngine.Random.Range(0, maxMapHeight - 1);
