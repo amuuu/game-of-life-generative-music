@@ -168,8 +168,9 @@ MonoBehaviour:
     type: 3}
   cubePrefab2: {fileID: 3830003512957174274, guid: d6038a564d4dcc842bda12353b753fa5,
     type: 3}
+  camera: {fileID: 963194227}
   generationCycleDelay: 0.15
-  maxMapSize: 50
+  maxMapSize: 70
   maxMapHeight: 15
   padding: 3
   cubeMargin: 15
@@ -483,11 +484,11 @@ MonoBehaviour:
   cameraTransform: {fileID: 963194228}
   mainCamera: {fileID: 963194225}
   birdsEye: {fileID: 351376116}
-  normalSpeed: 2
+  normalSpeed: 5
   fastSpeed: 15
   movementSpeed: 10
   movementTime: 10
-  rotationAmount: 0.5
+  rotationAmount: 1.5
   zoomAmount: {x: 5, y: 5, z: 5}
   minZoom: 10
   maxZoom: 20

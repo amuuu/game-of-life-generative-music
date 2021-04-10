@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ public class Generator : MonoBehaviour
 {
     public GameObject cubePrefab;
     public GameObject cubePrefab2;
+
+    public Camera camera;
 
     public float generationCycleDelay; // 0.5
 
@@ -31,6 +34,7 @@ public class Generator : MonoBehaviour
     private PresetBank presetBank;
 
     private float timeToGo;
+    private Renderer m_Renderer;
 
     void Start()
     {
@@ -91,15 +95,28 @@ public class Generator : MonoBehaviour
 
         if (newMap[x, y, z])
         {
-            if (y % 2 == 0)
-                mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * (blockDistance+1), z * blockDistance), Quaternion.identity);
-            else
-                mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(x * blockDistance, y * (blockDistance + 1), z * blockDistance), Quaternion.identity);
 
-            objExistsOnMap[x, y, z] = true;
+            if (IsInFOV(x * blockDistance, y * (blockDistance+1), z * blockDistance))
+            {
+                if (y % 2 == 0)
+                    mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(x * blockDistance, y * (blockDistance + 1), z * blockDistance), Quaternion.identity);
+                else
+                    mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(x * blockDistance, y * (blockDistance + 1), z * blockDistance), Quaternion.identity);
+                
+                objExistsOnMap[x, y, z] = true;
+            }
             //mapObjs[x, y, z].GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
 
         }
+    }
+
+    private bool IsInFOV(float x, float y, float z)
+    {
+        Vector3 screenPoint = camera.WorldToViewportPoint(new Vector3(x,y,z));
+        if (screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1)
+            return true;
+
+        return false;
     }
 
     bool UpdateCellState(int x, int y, int z)
@@ -156,6 +173,7 @@ public class Generator : MonoBehaviour
             }
         }
     }
+
     void GenerateRandomBlocks()
     {
         GenerateBasedOnPresets();
@@ -173,9 +191,9 @@ public class Generator : MonoBehaviour
         for (int i=0; i < size; i++)
         {
             do {
-                x = Random.Range(padding + 1, maxMapSize / 2);
-                y = Random.Range(0, maxMapHeight-1);
-                z = Random.Range(padding + 1, maxMapSize / 2);
+                x = UnityEngine.Random.Range(padding + 1, maxMapSize / 2);
+                y = UnityEngine.Random.Range(0, maxMapHeight-1);
+                z = UnityEngine.Random.Range(padding + 1, maxMapSize / 2);
             } while (_AlreadyExists(already, (x, y, z))) ;
 
             already.Add((x, y, z));
@@ -203,7 +221,7 @@ public class Generator : MonoBehaviour
         
         for (int i = 0; i < presetStructuresNumber; i++)
         {
-            prob = Random.Range(0f, 1f);
+            prob = UnityEngine.Random.Range(0f, 1f);
 
             if (prob > presetBank.pulsarPreset.probability)
             {
@@ -253,9 +271,9 @@ public class Generator : MonoBehaviour
 
     (int, int, int) GenerateRandomCoordinate(int radius)
     {
-        int randX = Random.Range(padding + radius, maxMapSize - padding - radius);
-        int randY = Random.Range(0, maxMapHeight - 1);
-        int randZ = Random.Range(padding + radius, maxMapSize - padding - radius);
+        int randX = UnityEngine.Random.Range(padding + radius, maxMapSize - padding - radius);
+        int randY = UnityEngine.Random.Range(0, maxMapHeight - 1);
+        int randZ = UnityEngine.Random.Range(padding + radius, maxMapSize - padding - radius);
 
         return (randX, randY, randZ);
     }
