@@ -21,20 +21,18 @@ public class Generator : MonoBehaviour
     public int randomParticlesNumber; //300
     public int presetStructuresNumber; // 50
 
-    private bool[,,] map;
-    private bool[,,] newMap;
-
-    private GameObject[,,] mapObjs;
-    private bool[,,] objExistsOnMap;
+    public int eyeSightRadius;
 
     private float scale = 5;
 
+    private bool[,,] map;
+    private bool[,,] newMap;
+    private GameObject[,,] mapObjs;
+    private bool[,,] objExistsOnMap;
+
     private float blockDistance;
-
     private PresetBank presetBank;
-
     private float timeToGo;
-
     private float tmpXCoord, tmpYCoord, tmpZCoord;
 
     void Start()
@@ -100,7 +98,7 @@ public class Generator : MonoBehaviour
             tmpYCoord = y * (blockDistance + 1);
             tmpZCoord = z * blockDistance;
             
-            if (IsInFOV(tmpXCoord, tmpYCoord, tmpZCoord))
+            if (IsInFOV(tmpXCoord, tmpYCoord, tmpZCoord) && IsInRadius(eyeSightRadius, tmpXCoord, tmpYCoord, tmpZCoord))
             {
                 if (y % 2 == 0)
                     mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
@@ -120,6 +118,13 @@ public class Generator : MonoBehaviour
         if (screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1)
             return true;
 
+        return false;
+    }
+
+    private bool IsInRadius(float radius, float x, float y, float z)
+    {
+        if (Vector3.Distance(mainCamera.transform.position, new Vector3(x,y,z)) <= radius)
+            return true;
         return false;
     }
 
