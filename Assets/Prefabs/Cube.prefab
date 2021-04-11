@@ -109,8 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 4532128550249052029}
-  cameraTransform: {fileID: 0}
-  baseVol: 0.12
+  baseVol: 0.5
   radius: 300
 --- !u!1 &1796197594150242509
 GameObject:
@@ -244,11 +243,12 @@ AudioSource:
   m_GameObject: {fileID: 2298891286980703005}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: bf59056f2bade5440afbb399aaf48b25,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: b7345d8a046378047a9a7b6d1dd4266e, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.12
-  m_Pitch: 0.68
+  m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -256,7 +256,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 100
+  MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -306,7 +306,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.5222222
+      value: 0.7277778
       inSlope: 0
       outSlope: 0
       tangentMode: 0
