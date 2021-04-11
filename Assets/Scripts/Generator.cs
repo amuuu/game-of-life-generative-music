@@ -22,6 +22,10 @@ public class Generator : MonoBehaviour
     public int presetStructuresNumber; // 50
 
     public int eyeSightRadius; //600
+    public int hearingRadius; //300
+
+
+    public float baseVol; // 0.12
 
     private float scale = 5;
 
@@ -42,7 +46,7 @@ public class Generator : MonoBehaviour
         blockDistance = scale + cubeMargin;
 
         presetBank = new PresetBank();
-        
+
         mapObjs = new GameObject[maxMapSize, maxMapHeight, maxMapSize];
         newMap = new bool[maxMapSize, maxMapHeight, maxMapSize];
         map = new bool[maxMapSize, maxMapHeight, maxMapSize];
@@ -51,7 +55,7 @@ public class Generator : MonoBehaviour
 
         GenerateRandomBlocks();
 
-        newMap = (bool[,,]) map.Clone();
+        newMap = (bool[,,])map.Clone();
 
         InitDisplay();
 
@@ -97,15 +101,16 @@ public class Generator : MonoBehaviour
             tmpXCoord = x * blockDistance;
             tmpYCoord = y * (blockDistance + 1);
             tmpZCoord = z * blockDistance;
-            
+
             if (IsInFOV(tmpXCoord, tmpYCoord, tmpZCoord) && IsInRadius(eyeSightRadius, tmpXCoord, tmpYCoord, tmpZCoord))
             {
                 if (y % 2 == 0)
                     mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
                 else
                     mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
-                
+
                 objExistsOnMap[x, y, z] = true;
+
             }
             //mapObjs[x, y, z].GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
 
@@ -114,7 +119,7 @@ public class Generator : MonoBehaviour
 
     private bool IsInFOV(float x, float y, float z)
     {
-        Vector3 screenPoint = mainCamera.WorldToViewportPoint(new Vector3(x,y,z));
+        Vector3 screenPoint = mainCamera.WorldToViewportPoint(new Vector3(x, y, z));
         if (screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1)
             return true;
 
@@ -123,12 +128,27 @@ public class Generator : MonoBehaviour
 
     private bool IsInRadius(float radius, float x, float y, float z)
     {
-        float distance = Vector3.Distance(mainCamera.transform.position, new Vector3(x, y, z));
+        float distance = GetDistance(mainCamera.transform.position, new Vector3(x, y, z));
 
         if (Math.Floor(distance) < radius)
             return true;
-        
+
         return false;
+    }
+
+    private float GetSoundVol(float radius, float x, float y, float z)
+    {
+        float distance = GetDistance(mainCamera.transform.position, new Vector3(x, y, z));
+
+        //if (Math.Floor(distance) < radius)
+            return (float)(baseVol * distance / radius);
+
+        //return 0f;
+    }
+
+    private float GetDistance(Vector3 a, Vector3 b)
+    {
+        return Vector3.Distance(a, b);
     }
 
     private bool UpdateCellState(int x, int y, int z)
