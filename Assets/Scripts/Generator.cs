@@ -112,8 +112,6 @@ public class Generator : MonoBehaviour
                 objExistsOnMap[x, y, z] = true;
 
             }
-            //mapObjs[x, y, z].GetComponent<MeshRenderer>().material.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
-
         }
     }
 
