@@ -21,7 +21,7 @@ public class Cube : MonoBehaviour
 
         float vol= (float)(baseVol * distance / radius);
         audioSource.volume = vol;
-        //audioSource.pitch = Random.Range(0.7f, 1f);
+        audioSource.pitch = Random.Range(0.2f, 1f);
 
         audioSource.PlayDelayed(Random.Range(0.05f,0.10f)*1.2f);//distance / 1000 + Random.Range(.2f,0.5f));
         //audioSource.Play();
