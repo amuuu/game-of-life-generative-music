@@ -125,13 +125,11 @@ public class Composer : MonoBehaviour
             string[] splittedName = f.Name.Split('-');
 
             int noteNum = NoteNameToNumber(splittedName[0]);
-            print("THIS NOTE EXISTS " + noteNum);
 
             if ((noteNum != -1) && IsInAllowedNotes(noteNum))
             {
-                Debug.Log("HERERERERE");
                 GameObject tmp = Instantiate(audioPrefab);
-                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name);
+                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
             }
         }
 
@@ -150,7 +148,6 @@ public class Composer : MonoBehaviour
         {
             if (allowedNotes[i] == num)
             {
-                Debug.Log("NOTE ALLOWED " + num);
                 return true;
             }
         }

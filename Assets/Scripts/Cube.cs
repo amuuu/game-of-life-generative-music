@@ -13,7 +13,7 @@ public class Cube : MonoBehaviour
     {
         cameraTransform = GameObject.FindGameObjectsWithTag("MainCamera")[0].transform;
     }
-    /*
+    
     void Start()
     {
         GameObject[] tmp = GameObject.FindGameObjectsWithTag("Sounds");
@@ -30,7 +30,7 @@ public class Cube : MonoBehaviour
         audioSource.PlayDelayed(Random.Range(0.05f,0.10f)*1.2f);//distance / 1000 + Random.Range(.2f,0.5f));
         //audioSource.Play();
     }
-    */
+    
     void Update()
     {
         
