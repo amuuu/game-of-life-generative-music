@@ -5,7 +5,7 @@ using UnityEngine;
 
 // Composer chooses sound samples based on user's settings such as scale type.
 
-// File names: A4-pad-1.wav   (note number - sound type - file name)
+// File names: As4-pad-1.wav   (note name - sound type - file name)
 
 public class Composer : MonoBehaviour
 {
@@ -13,11 +13,9 @@ public class Composer : MonoBehaviour
     
     public int scaleType; // 1:minor / 2:major
     public int baseNote;
-    
-    public int minNote; // 36
-    public int maxNote; // 88
     public int numOctaves; // 3
 
+    private Dictionary<string, int> noteNames;
     private int[] majorScaleNotes;
     private int[] minorScaleNotes;
     private int[] scale;
@@ -76,6 +74,23 @@ public class Composer : MonoBehaviour
         minorScaleNotes[4] = 7;
         minorScaleNotes[5] = 8;
         minorScaleNotes[6] = 10;
+
+        int minNote = 24;
+        for (int i = 0; i < 8; i++)
+        {
+            noteNames.Add("C" + i.ToString(), minNote + 12 * i);
+            noteNames.Add("Cs" + i.ToString(), minNote + 1 + 12 * i);
+            noteNames.Add("D" + i.ToString(), minNote + 2 + 12 * i);
+            noteNames.Add("Ds" + i.ToString(), minNote + 3 + 12 * i);
+            noteNames.Add("E" + i.ToString(), minNote + 4 + 12 * i);
+            noteNames.Add("F" + i.ToString(), minNote + 5 + 12 * i);
+            noteNames.Add("Fs" + i.ToString(), minNote + 6 + 12 * i);
+            noteNames.Add("G" + i.ToString(), minNote + 7 + 12 * i);
+            noteNames.Add("Gs" + i.ToString(), minNote + 8 + 12 * i);
+            noteNames.Add("A" + i.ToString(), minNote + 9 + 12 * i);
+            noteNames.Add("As" + i.ToString(), minNote + 10 + 12 * i);
+            noteNames.Add("B" + i.ToString(), minNote + 11 + 12 * i);
+        }
     }
 
     void CalcAllowedNotes()
@@ -96,13 +111,16 @@ public class Composer : MonoBehaviour
 
         foreach (FileInfo f in info)
         {
-            print("Found: " + f.Name);
+            //print("Found: " + f.Name);
+            
             string[] splittedName = f.Name.Split('-');
 
-            if (IsInAllowedNotes(NoteNameToNumber(splittedName[0])))
+            int noteNum = NoteNameToNumber(splittedName[0]);
+            
+            if ((noteNum != -1) && IsInAllowedNotes(noteNum))
             {
                 GameObject tmp = Instantiate(audioPrefab);
-                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(f.Name);
+                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name);
             }
         }
 
@@ -110,8 +128,8 @@ public class Composer : MonoBehaviour
 
     int NoteNameToNumber(string noteName)
     {
-
-
+        if (noteNames.TryGetValue(noteName, out int number))
+            return number;
         return -1;
     }
 
