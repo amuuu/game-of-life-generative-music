@@ -104,7 +104,6 @@ public class Composer : MonoBehaviour
         for (int i = 0; i < allowedNotesSize; i++)
         {
             allowedNotes[i] = baseNote + scale[i%7] + 12 * octaveCounter;
-            Debug.Log("RULE " + allowedNotes[i]);
 
             if (i % 7 == 6) octaveCounter++;
         }
@@ -120,7 +119,7 @@ public class Composer : MonoBehaviour
 
         foreach (FileInfo f in info)
         {
-            print("Found: " + f.Name);
+            // print("Found: " + f.Name);
             
             string[] splittedName = f.Name.Split('-');
 
@@ -130,6 +129,8 @@ public class Composer : MonoBehaviour
             {
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
+                
+                print("LOADED: " + f.Name);
             }
         }
 
