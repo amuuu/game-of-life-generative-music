@@ -12,7 +12,7 @@ public class Composer : MonoBehaviour
     public GameObject audioPrefab;
     
     public int scaleType; // 1:minor / 2:major
-    public int baseNote;
+    public int baseNote; // c2:36 c8:88
     public int numOctaves; // 3
 
     private Dictionary<string, int> noteNames;
@@ -30,16 +30,18 @@ public class Composer : MonoBehaviour
         InitScales();
 
         scale = new int[7];
+
+        noteNames = new Dictionary<string, int>();
+        InitNoteNamesDict();
     }
 
     void Start()
     {
-
         
         switch (scaleType)
         {
-            case 1: scale = minorScaleNotes; break;
-            case 2: scale = majorScaleNotes; break;
+            case 1: minorScaleNotes.CopyTo(scale,0); break;
+            case 2: majorScaleNotes.CopyTo(scale, 0); break;
         }
 
         allowedNotesSize = 7 * numOctaves;
@@ -47,11 +49,9 @@ public class Composer : MonoBehaviour
         
         CalcAllowedNotes();
         
-
         ScanDirectory();
     }
 
-    // Update is called once per frame
     void Update()
     {
        
@@ -75,6 +75,11 @@ public class Composer : MonoBehaviour
         minorScaleNotes[5] = 8;
         minorScaleNotes[6] = 10;
 
+        
+    }
+
+    void InitNoteNamesDict()
+    {
         int minNote = 24;
         for (int i = 0; i < 8; i++)
         {
@@ -95,9 +100,13 @@ public class Composer : MonoBehaviour
 
     void CalcAllowedNotes()
     {
+        int octaveCounter = 0;
         for (int i = 0; i < allowedNotesSize; i++)
         {
-            allowedNotes[i] = baseNote + scale[i%7] + 12 * (i % 7);
+            allowedNotes[i] = baseNote + scale[i%7] + 12 * octaveCounter;
+            Debug.Log("RULE " + allowedNotes[i]);
+
+            if (i % 7 == 6) octaveCounter++;
         }
     }
 
@@ -111,14 +120,16 @@ public class Composer : MonoBehaviour
 
         foreach (FileInfo f in info)
         {
-            //print("Found: " + f.Name);
+            print("Found: " + f.Name);
             
             string[] splittedName = f.Name.Split('-');
 
             int noteNum = NoteNameToNumber(splittedName[0]);
-            
+            print("THIS NOTE EXISTS " + noteNum);
+
             if ((noteNum != -1) && IsInAllowedNotes(noteNum))
             {
+                Debug.Log("HERERERERE");
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name);
             }
@@ -138,7 +149,10 @@ public class Composer : MonoBehaviour
         for (int i = 0; i < allowedNotesSize; i++)
         {
             if (allowedNotes[i] == num)
+            {
+                Debug.Log("NOTE ALLOWED " + num);
                 return true;
+            }
         }
         return false;
     }
