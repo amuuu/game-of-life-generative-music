@@ -302,7 +302,7 @@ MonoBehaviour:
   maxMapHeight: 15
   padding: 3
   cubeMargin: 27
-  randomParticlesNumber: 0
+  randomParticlesNumber: 100
   presetStructuresNumber: 100
   eyeSightRadius: 600
   hearingRadius: 300
