@@ -4,11 +4,11 @@ using UnityEngine;
 
 // Composer chooses sound samples based on user's settings such as scale type.
 
-// File names: 36-pad-minilogue-1.wav
+// File names: 36-pad-minilogue-1.wav   (note number - sound type - sound pack name - file name)
 
 public class Composer : MonoBehaviour
 {
-    public int scaleType; // 0:None / 1:minor / 2:major
+    public int scaleType; // 1:minor / 2:major
     public int baseNote;
     
     public int minNote; // 36
@@ -17,14 +17,29 @@ public class Composer : MonoBehaviour
 
     private int[] majorScaleNotes;
     private int[] minorScaleNotes;
+    private int[] scale;
 
-    // Start is called before the first frame update
-    void Start()
+    private int[] allowedNotes;
+
+    private void Awake()
     {
         majorScaleNotes = new int[7];
         minorScaleNotes = new int[7];
         InitScales();
-        
+
+        scale = new int[7];
+    }
+
+    void Start()
+    {
+        switch (scaleType)
+        {
+            case 1: scale = minorScaleNotes; break;
+            case 2: scale = majorScaleNotes; break;
+        }
+
+        allowedNotes = new int [7];
+        CalcAllowedNotes();
     }
 
     // Update is called once per frame
@@ -52,4 +67,14 @@ public class Composer : MonoBehaviour
         minorScaleNotes[5] = 8;
         minorScaleNotes[6] = 10;
     }
+
+    void CalcAllowedNotes()
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            allowedNotes[i] = baseNote + scale[i];
+        }
+    }
+
+
 }
