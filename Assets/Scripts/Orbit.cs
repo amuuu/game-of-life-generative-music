@@ -21,6 +21,10 @@ public class Orbit : MonoBehaviour
         radius = 2.0f;
 
         transform.Rotate(new Vector3(Random.Range(-100,100), Random.Range(-100, 100), Random.Range(-100, 100)));
+
+        rotationSpeed += Random.Range(-100, 50);
+        radius += Random.Range(-3, 3);
+
     }
 
     void Update()
