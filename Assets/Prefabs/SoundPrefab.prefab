@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1851398574213484118}
   - component: {fileID: 1851398574213484119}
   m_Layer: 0
-  m_Name: Audio Source
+  m_Name: SoundPrefab
   m_TagString: Sounds
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,7 +88,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.99
+      value: 0.84
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -103,7 +103,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.91944444
+      value: 0.65833336
       inSlope: 0
       outSlope: 0
       tangentMode: 0

@@ -27,7 +27,8 @@ public class Generator : MonoBehaviour
 
     public float baseVol; // 0.12
 
-    private float scale = 5;
+    public float scale; // 5;
+
 
     private bool[,,] map;
     private bool[,,] newMap;

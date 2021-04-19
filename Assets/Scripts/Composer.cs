@@ -74,8 +74,6 @@ public class Composer : MonoBehaviour
         minorScaleNotes[4] = 7;
         minorScaleNotes[5] = 8;
         minorScaleNotes[6] = 10;
-
-        
     }
 
     void InitNoteNamesDict()
@@ -133,7 +131,6 @@ public class Composer : MonoBehaviour
                 print("LOADED: " + f.Name);
             }
         }
-
     }
 
     int NoteNameToNumber(string noteName)
