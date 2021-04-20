@@ -10,8 +10,9 @@ The hundreds of small grains of sounds will create an ambience. The player is ab
 The player chooses a major/minor scale for the sounds. Based on the scale, samples from the user's selected sound bank are chosen. There are multiple types of sounds on the sound banks such as: pad, keys, bass, and percussion.
 
 There are multiple Game of Life related parameters that can be set by the user such as:
-- Number of structured objects
+- Number of structured objects (presets)
 - Number of totally random objects
 - Distance between objects
 - Time between each game of life generation
+- Number of height levels
 - and more. ~
