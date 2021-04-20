@@ -173,7 +173,7 @@ MonoBehaviour:
   maxMapSize: 70
   maxMapHeight: 15
   padding: 3
-  cubeMargin: 27
+  cubeMargin: 18
   randomParticlesNumber: 100
   presetStructuresNumber: 100
   eyeSightRadius: 600
