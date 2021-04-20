@@ -12,7 +12,7 @@ public class Composer : MonoBehaviour
     public GameObject audioPrefab;
     
     public int scaleType; // 1:minor / 2:major
-    public int baseNote; // c2:36 c8:88
+    public int baseNote; // c2: 36 c8: 88
     public int numOctaves; // 3
 
     private Dictionary<string, int> noteNames;

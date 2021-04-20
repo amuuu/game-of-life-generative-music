@@ -169,11 +169,11 @@ MonoBehaviour:
   cubePrefab2: {fileID: 3830003512957174274, guid: d6038a564d4dcc842bda12353b753fa5,
     type: 3}
   mainCamera: {fileID: 963194227}
-  generationCycleDelay: 0.42
+  generationCycleDelay: 0.25
   maxMapSize: 70
   maxMapHeight: 15
   padding: 3
-  cubeMargin: 18
+  cubeMargin: 30
   randomParticlesNumber: 100
   presetStructuresNumber: 100
   eyeSightRadius: 600

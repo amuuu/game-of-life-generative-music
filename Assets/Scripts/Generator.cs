@@ -15,7 +15,6 @@ public class Generator : MonoBehaviour
     public int maxMapSize; // 50
     public int maxMapHeight; // 10
 
-    public int padding; // 3
     public float cubeMargin; // 3
 
     public int randomParticlesNumber; //300
@@ -29,6 +28,7 @@ public class Generator : MonoBehaviour
 
     public float scale; // 5;
 
+    private int padding = 3; // 3
 
     private bool[,,] map;
     private bool[,,] newMap;
