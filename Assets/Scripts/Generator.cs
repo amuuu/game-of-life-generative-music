@@ -93,8 +93,9 @@ public class Generator : MonoBehaviour
     {
         if (objExistsOnMap[x, y, z])
         {
-            Destroy(mapObjs[x, y, z]);
             objExistsOnMap[x, y, z] = false;
+            StartCoroutine(DestroyCoroutine(UnityEngine.Random.Range(0f, 0.25f), mapObjs[x, y, z]));
+            //Destroy(mapObjs[x, y, z]);
         }
 
         if (newMap[x, y, z])
@@ -124,8 +125,14 @@ public class Generator : MonoBehaviour
             mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
         else if (prefab == 2)
             mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
-        Debug.Log("HERErERER");
     }
+    
+    IEnumerator DestroyCoroutine(float time, GameObject gameObj)
+    {
+        yield return new WaitForSeconds(time);
+        Destroy(gameObj);
+    }
+
     private bool IsInFOV(float x, float y, float z)
     {
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(new Vector3(x, y, z));

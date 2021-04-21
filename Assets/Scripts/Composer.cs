@@ -128,7 +128,7 @@ public class Composer : MonoBehaviour
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
                 
-                print("LOADED: " + f.Name);
+                //print("LOADED: " + f.Name);
             }
         }
     }

@@ -175,7 +175,7 @@ MonoBehaviour:
   cubeMargin: 30
   randomParticlesNumber: 100
   presetStructuresNumber: 100
-  eyeSightRadius: 600
+  eyeSightRadius: 500
   hearingRadius: 300
   baseVol: 0.12
   scale: 2
