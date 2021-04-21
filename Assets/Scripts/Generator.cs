@@ -106,9 +106,10 @@ public class Generator : MonoBehaviour
             if (IsInFOV(tmpXCoord, tmpYCoord, tmpZCoord) && IsInRadius(eyeSightRadius, tmpXCoord, tmpYCoord, tmpZCoord))
             {
                 if (y % 2 == 0)
-                    mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
+                    StartCoroutine(InstantiateCoroutine(1, UnityEngine.Random.Range(0f, generationCycleDelay - 0.1f), x,y,z, tmpXCoord, tmpYCoord, tmpZCoord));
+
                 else
-                    mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
+                    StartCoroutine(InstantiateCoroutine(2, UnityEngine.Random.Range(0f, generationCycleDelay - 0.1f), x, y, z, tmpXCoord, tmpYCoord, tmpZCoord));
 
                 objExistsOnMap[x, y, z] = true;
 
@@ -116,6 +117,15 @@ public class Generator : MonoBehaviour
         }
     }
 
+    IEnumerator InstantiateCoroutine(int prefab, float time, int x, int y, int z, float tmpXCoord, float tmpYCoord, float tmpZCoord)
+    {
+        yield return new WaitForSeconds(time);
+        if(prefab == 1)
+            mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
+        else if (prefab == 2)
+            mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
+        Debug.Log("HERErERER");
+    }
     private bool IsInFOV(float x, float y, float z)
     {
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(new Vector3(x, y, z));
