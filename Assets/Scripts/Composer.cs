@@ -54,14 +54,13 @@ public class Composer : MonoBehaviour
 
 class ComposerController
 {
-    private Dictionary<string, int> noteNames;
-
-
+    
     private int baseNote;
     private int scaleType;
     private int numOctaves;
 
     private ScaleManager scaleManager;
+    private Dictionary<string, int> noteNames;
 
     public ComposerController(int baseNote, int scaleType, int numOctaves)
     {
@@ -74,6 +73,7 @@ class ComposerController
 
         scaleManager = new ScaleManager(this.baseNote, this.scaleType, this.numOctaves);
     }
+
 
     public int NoteNameToNumber(string noteName)
     {
@@ -111,16 +111,26 @@ class ComposerController
 
 class ScaleManager
 {
-    private int[] majorScaleNotes;
-    private int[] minorScaleNotes;
-    private int[] scale;
+    int baseNote;
+    int scaleType;
+    int numOctaves;
 
     private int[] allowedNotes;
     private int allowedNotesSize;
 
-    int baseNote;
-    int scaleType;
-    int numOctaves;
+    private int[] majorScaleNotes;
+    private string[] majorScaleChords;
+
+    private int[] minorScaleNotes;
+    private string[] minorScaleChords;
+
+    private int[] scale;
+    private string[] scaleChords;
+
+
+    public int[] currentChord;
+    private ChordManager chordManager;
+
 
     public ScaleManager(int baseNote, int scaleType, int numOctaves)
     {
@@ -129,13 +139,21 @@ class ScaleManager
         this.scaleType = scaleType;
 
         majorScaleNotes = new int[7];
+        majorScaleChords = new string[7];
+
         minorScaleNotes = new int[7];
+        minorScaleChords = new string[7];
+
         InitScales();
 
         scale = new int[7];
         SetScaleType();
 
         CalculateScale(this.baseNote, this.scaleType, this.numOctaves);
+
+        chordManager = new ChordManager();
+        GetRandomChordInScale();
+        
     }
 
     public void CalculateScale(int baseNote, int scaleType, int numOctaves)
@@ -143,19 +161,47 @@ class ScaleManager
         this.baseNote = baseNote;
         this.numOctaves = numOctaves;
         this.scaleType = scaleType;
-
-        allowedNotesSize = 7 * this.numOctaves;
-        allowedNotes = new int[allowedNotesSize];
         
-        CalcAllowedNotes();
+        CalcAllowedNotes(false);
     }
 
-    private void CalcAllowedNotes()
+    public void GetRandomChordInScale()
     {
+        
+        int index = Random.Range(0, 7);
+        string[] notes = chordManager.GetChordNotes(scaleChords[index]);
+        int[] result = new int[notes.Length];
+
+        for (int i=0; i< notes.Length; i++)
+        {
+            if(!notes[i].Contains("b"))
+            {
+                result[i] = int.Parse(notes[i]);
+            }
+            else
+            {
+                result[i] = int.Parse(notes[i])-1;
+            }
+        }
+
+        result.CopyTo(currentChord, 0);
+    }
+
+    private void CalcAllowedNotes(bool isChordMode)
+    {
+        int baseVal;
+        if (!isChordMode)
+            baseVal = 7;
+        else
+            baseVal = currentChord.Length;
+     
+        allowedNotesSize = baseVal * this.numOctaves;
+        allowedNotes = new int[allowedNotesSize];
+
         int octaveCounter = 0;
         for (int i = 0; i < allowedNotesSize; i++)
         {
-            allowedNotes[i] = baseNote + scale[i % 7] + 12 * octaveCounter;
+            allowedNotes[i] = baseNote + currentChord[i % baseVal] + 12 * octaveCounter;
 
             if (i % 7 == 6) octaveCounter++;
         }
@@ -175,10 +221,17 @@ class ScaleManager
 
     private void SetScaleType()
     {
-        if (this.scaleType== 1)
+        if (this.scaleType == 1)
+        {
             minorScaleNotes.CopyTo(scale, 0);
+            minorScaleChords.CopyTo(scaleChords, 0);
+        }
         else if (this.scaleType == 2)
+        {
             majorScaleNotes.CopyTo(scale, 0);
+            majorScaleChords.CopyTo(scaleChords, 0);
+
+        }
     }
 
     private void InitScales()
@@ -198,13 +251,44 @@ class ScaleManager
         minorScaleNotes[4] = 7;
         minorScaleNotes[5] = 8;
         minorScaleNotes[6] = 10;
+
+        majorScaleChords[0] = "M";
+        majorScaleChords[1] = "m";
+        majorScaleChords[2] = "m";
+        majorScaleChords[3] = "M";
+        majorScaleChords[4] = "M";
+        majorScaleChords[5] = "m";
+        majorScaleChords[6] = "dim";
+
+        minorScaleChords[0] = "m";
+        minorScaleChords[1] = "dim";
+        minorScaleChords[2] = "M";
+        minorScaleChords[3] = "m";
+        minorScaleChords[4] = "m";
+        minorScaleChords[5] = "M";
+        minorScaleChords[6] = "M";
     }
 
 }
 
 class ChordManager
 {
-    
+    private Dictionary<string, string[]> chordTypes;
 
+    public ChordManager()
+    {
+        InitChordTypes();
+    }
 
+    public void InitChordTypes()
+    { 
+        chordTypes.Add("M", new string [3] { "0","2","4" });
+        chordTypes.Add("m", new string[3] { "0", "2", "4" });
+        chordTypes.Add("dim", new string[3] { "0", "2", "4b" });
+    }
+
+    public string[] GetChordNotes(string name)
+    {
+        return (0, 0, 0);
+    }
 }
