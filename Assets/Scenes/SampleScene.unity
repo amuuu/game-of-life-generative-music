@@ -307,8 +307,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioPrefab: {fileID: 1851398574213484117, guid: 969d2d83426b7a44392b257aa4562db2,
     type: 3}
-  scaleType: 2
-  baseNote: 36
+  scaleType: 1
+  baseNote: 44
   numOctaves: 3
 --- !u!1 &963194225
 GameObject:

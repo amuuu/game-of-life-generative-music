@@ -78,21 +78,21 @@ public class Composer : MonoBehaviour
 
     void InitNoteNamesDict()
     {
-        int minNote = 24;
+        int minNote = 0;
         for (int i = 0; i < 8; i++)
         {
-            noteNames.Add("C" + i.ToString(), minNote + 12 * i);
-            noteNames.Add("Cs" + i.ToString(), minNote + 1 + 12 * i);
-            noteNames.Add("D" + i.ToString(), minNote + 2 + 12 * i);
-            noteNames.Add("Ds" + i.ToString(), minNote + 3 + 12 * i);
-            noteNames.Add("E" + i.ToString(), minNote + 4 + 12 * i);
-            noteNames.Add("F" + i.ToString(), minNote + 5 + 12 * i);
-            noteNames.Add("Fs" + i.ToString(), minNote + 6 + 12 * i);
-            noteNames.Add("G" + i.ToString(), minNote + 7 + 12 * i);
-            noteNames.Add("Gs" + i.ToString(), minNote + 8 + 12 * i);
-            noteNames.Add("A" + i.ToString(), minNote + 9 + 12 * i);
-            noteNames.Add("As" + i.ToString(), minNote + 10 + 12 * i);
-            noteNames.Add("B" + i.ToString(), minNote + 11 + 12 * i);
+            noteNames.Add("c" + i.ToString(), minNote + 12 * i);
+            noteNames.Add("cs" + i.ToString(), minNote + 1 + 12 * i);
+            noteNames.Add("d" + i.ToString(), minNote + 2 + 12 * i);
+            noteNames.Add("ds" + i.ToString(), minNote + 3 + 12 * i);
+            noteNames.Add("e" + i.ToString(), minNote + 4 + 12 * i);
+            noteNames.Add("f" + i.ToString(), minNote + 5 + 12 * i);
+            noteNames.Add("fs" + i.ToString(), minNote + 6 + 12 * i);
+            noteNames.Add("g" + i.ToString(), minNote + 7 + 12 * i);
+            noteNames.Add("gs" + i.ToString(), minNote + 8 + 12 * i);
+            noteNames.Add("a" + i.ToString(), minNote + 9 + 12 * i);
+            noteNames.Add("as" + i.ToString(), minNote + 10 + 12 * i);
+            noteNames.Add("b" + i.ToString(), minNote + 11 + 12 * i);
         }
     }
 
@@ -102,7 +102,7 @@ public class Composer : MonoBehaviour
         for (int i = 0; i < allowedNotesSize; i++)
         {
             allowedNotes[i] = baseNote + scale[i%7] + 12 * octaveCounter;
-
+            Debug.Log("ALLOWED------->" + allowedNotes[i]);
             if (i % 7 == 6) octaveCounter++;
         }
     }
@@ -128,20 +128,25 @@ public class Composer : MonoBehaviour
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
                 
-                //print("LOADED: " + f.Name);
+                print("LOADED: " + f.Name);
             }
         }
     }
 
     int NoteNameToNumber(string noteName)
     {
-        if (noteNames.TryGetValue(noteName, out int number))
+        Debug.Log("NAME----->" + noteName);
+        if (noteNames.TryGetValue(noteName.ToLower(), out int number))
+        {
+            Debug.Log("DICT------->" + number);
             return number;
+        }
         return -1;
     }
 
     bool IsInAllowedNotes(int num)
     {
+        Debug.Log("num------->" + num);
         for (int i = 0; i < allowedNotesSize; i++)
         {
             if (allowedNotes[i] == num)
@@ -151,4 +156,5 @@ public class Composer : MonoBehaviour
         }
         return false;
     }
+
 }
