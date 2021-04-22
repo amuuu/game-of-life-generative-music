@@ -78,21 +78,20 @@ public class Composer : MonoBehaviour
 
     void InitNoteNamesDict()
     {
-        int minNote = 0;
         for (int i = 0; i < 8; i++)
         {
-            noteNames.Add("c" + i.ToString(), minNote + 12 * i);
-            noteNames.Add("cs" + i.ToString(), minNote + 1 + 12 * i);
-            noteNames.Add("d" + i.ToString(), minNote + 2 + 12 * i);
-            noteNames.Add("ds" + i.ToString(), minNote + 3 + 12 * i);
-            noteNames.Add("e" + i.ToString(), minNote + 4 + 12 * i);
-            noteNames.Add("f" + i.ToString(), minNote + 5 + 12 * i);
-            noteNames.Add("fs" + i.ToString(), minNote + 6 + 12 * i);
-            noteNames.Add("g" + i.ToString(), minNote + 7 + 12 * i);
-            noteNames.Add("gs" + i.ToString(), minNote + 8 + 12 * i);
-            noteNames.Add("a" + i.ToString(), minNote + 9 + 12 * i);
-            noteNames.Add("as" + i.ToString(), minNote + 10 + 12 * i);
-            noteNames.Add("b" + i.ToString(), minNote + 11 + 12 * i);
+            noteNames.Add("c" + i.ToString(), 12 * i);
+            noteNames.Add("cs" + i.ToString(), 1 + 12 * i);
+            noteNames.Add("d" + i.ToString(), 2 + 12 * i);
+            noteNames.Add("ds" + i.ToString(), 3 + 12 * i);
+            noteNames.Add("e" + i.ToString(), 4 + 12 * i);
+            noteNames.Add("f" + i.ToString(), 5 + 12 * i);
+            noteNames.Add("fs" + i.ToString(), 6 + 12 * i);
+            noteNames.Add("g" + i.ToString(), 7 + 12 * i);
+            noteNames.Add("gs" + i.ToString(), 8 + 12 * i);
+            noteNames.Add("a" + i.ToString(), 9 + 12 * i);
+            noteNames.Add("as" + i.ToString(), 10 + 12 * i);
+            noteNames.Add("b" + i.ToString(), 11 + 12 * i);
         }
     }
 
@@ -135,10 +134,8 @@ public class Composer : MonoBehaviour
 
     int NoteNameToNumber(string noteName)
     {
-        Debug.Log("NAME----->" + noteName);
         if (noteNames.TryGetValue(noteName.ToLower(), out int number))
         {
-            Debug.Log("DICT------->" + number);
             return number;
         }
         return -1;
@@ -146,7 +143,6 @@ public class Composer : MonoBehaviour
 
     bool IsInAllowedNotes(int num)
     {
-        Debug.Log("num------->" + num);
         for (int i = 0; i < allowedNotesSize; i++)
         {
             if (allowedNotes[i] == num)

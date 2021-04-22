@@ -169,7 +169,7 @@ MonoBehaviour:
   cubePrefab2: {fileID: 3830003512957174274, guid: d6038a564d4dcc842bda12353b753fa5,
     type: 3}
   mainCamera: {fileID: 963194227}
-  generationCycleDelay: 0.7
+  generationCycleDelay: 1
   maxMapSize: 70
   maxMapHeight: 15
   cubeMargin: 30
@@ -307,8 +307,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioPrefab: {fileID: 1851398574213484117, guid: 969d2d83426b7a44392b257aa4562db2,
     type: 3}
-  scaleType: 1
-  baseNote: 44
+  scaleType: 2
+  baseNote: 38
   numOctaves: 3
 --- !u!1 &963194225
 GameObject:
