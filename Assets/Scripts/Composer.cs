@@ -15,49 +15,119 @@ public class Composer : MonoBehaviour
     public int baseNote; // c2: 36 c8: 88
     public int numOctaves; // 3
 
+    private ComposerController controller;
+
+    void Start()
+    {
+
+        controller = new ComposerController(baseNote, scaleType, numOctaves);
+        
+        ScanDirectory();
+    }
+
+    void ScanDirectory()
+    {
+        string PATH = "Samples/";
+        
+        DirectoryInfo dir = new DirectoryInfo("Assets/Resources/"+PATH);
+
+        FileInfo[] info = dir.GetFiles("*.wav");
+
+        foreach (FileInfo f in info)
+        {
+            // print("Found: " + f.Name);
+            
+            string[] splittedName = f.Name.Split('-');
+
+            int noteNum = controller.NoteNameToNumber(splittedName[0]);
+
+            if ((noteNum != -1) && controller.IsInAllowedNotes(noteNum))
+            {
+                GameObject tmp = Instantiate(audioPrefab);
+                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
+                
+                print("LOADED: " + f.Name);
+            }
+        }
+    }
+}
+
+class ComposerController
+{
     private Dictionary<string, int> noteNames;
     private int[] majorScaleNotes;
     private int[] minorScaleNotes;
     private int[] scale;
 
     private int[] allowedNotes;
-    int allowedNotesSize;
+    private int allowedNotesSize;
 
-    private void Awake()
+    private int baseNote;
+    private int scaleType;
+    private int numOctaves;
+
+    public ComposerController(int baseNote, int scaleType, int numOctaves)
     {
+        this.baseNote = baseNote;
+        this.scaleType = scaleType;
+        this.numOctaves = numOctaves;
+
+        scale = new int[7];
         majorScaleNotes = new int[7];
         minorScaleNotes = new int[7];
         InitScales();
 
-        scale = new int[7];
-
         noteNames = new Dictionary<string, int>();
         InitNoteNamesDict();
+
+        SetScale();
     }
 
-    void Start()
+    public void SetScale()
     {
-        
         switch (scaleType)
         {
-            case 1: minorScaleNotes.CopyTo(scale,0); break;
+            case 1: minorScaleNotes.CopyTo(scale, 0); break;
             case 2: majorScaleNotes.CopyTo(scale, 0); break;
         }
 
-        allowedNotesSize = 7 * numOctaves;
-        allowedNotes = new int [allowedNotesSize];
-        
+        allowedNotesSize = 7 * this.numOctaves;
+        allowedNotes = new int[allowedNotesSize];
+
         CalcAllowedNotes();
-        
-        ScanDirectory();
     }
 
-    void Update()
+    public int NoteNameToNumber(string noteName)
     {
-       
+        if (noteNames.TryGetValue(noteName.ToLower(), out int number))
+        {
+            return number;
+        }
+        return -1;
+    }
+    public bool IsInAllowedNotes(int num)
+    {
+        for (int i = 0; i < allowedNotesSize; i++)
+        {
+            if (allowedNotes[i] == num)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    void InitScales()
+    private void CalcAllowedNotes()
+    {
+        int octaveCounter = 0;
+        for (int i = 0; i < allowedNotesSize; i++)
+        {
+            allowedNotes[i] = baseNote + scale[i % 7] + 12 * octaveCounter;
+            //Debug.Log("ALLOWED------->" + allowedNotes[i]);
+            if (i % 7 == 6) octaveCounter++;
+        }
+    }
+    private void InitScales()
     {
         majorScaleNotes[0] = 0;
         majorScaleNotes[1] = 2;
@@ -76,7 +146,7 @@ public class Composer : MonoBehaviour
         minorScaleNotes[6] = 10;
     }
 
-    void InitNoteNamesDict()
+    private void InitNoteNamesDict()
     {
         for (int i = 0; i < 8; i++)
         {
@@ -94,63 +164,4 @@ public class Composer : MonoBehaviour
             noteNames.Add("b" + i.ToString(), 11 + 12 * i);
         }
     }
-
-    void CalcAllowedNotes()
-    {
-        int octaveCounter = 0;
-        for (int i = 0; i < allowedNotesSize; i++)
-        {
-            allowedNotes[i] = baseNote + scale[i%7] + 12 * octaveCounter;
-            Debug.Log("ALLOWED------->" + allowedNotes[i]);
-            if (i % 7 == 6) octaveCounter++;
-        }
-    }
-
-    void ScanDirectory()
-    {
-        string PATH = "Samples/";
-        
-        DirectoryInfo dir = new DirectoryInfo("Assets/Resources/"+PATH);
-
-        FileInfo[] info = dir.GetFiles("*.wav");
-
-        foreach (FileInfo f in info)
-        {
-            // print("Found: " + f.Name);
-            
-            string[] splittedName = f.Name.Split('-');
-
-            int noteNum = NoteNameToNumber(splittedName[0]);
-
-            if ((noteNum != -1) && IsInAllowedNotes(noteNum))
-            {
-                GameObject tmp = Instantiate(audioPrefab);
-                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
-                
-                print("LOADED: " + f.Name);
-            }
-        }
-    }
-
-    int NoteNameToNumber(string noteName)
-    {
-        if (noteNames.TryGetValue(noteName.ToLower(), out int number))
-        {
-            return number;
-        }
-        return -1;
-    }
-
-    bool IsInAllowedNotes(int num)
-    {
-        for (int i = 0; i < allowedNotesSize; i++)
-        {
-            if (allowedNotes[i] == num)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }
