@@ -115,7 +115,6 @@ class ScaleManager
     private int[] minorScaleNotes;
     private int[] scale;
 
-
     private int[] allowedNotes;
     private int allowedNotesSize;
 
@@ -137,11 +136,6 @@ class ScaleManager
         SetScaleType();
 
         CalculateScale(this.baseNote, this.scaleType, this.numOctaves);
-    }
-
-    public int[] GetAllowedNotes()
-    {
-        return allowedNotes;
     }
 
     public void CalculateScale(int baseNote, int scaleType, int numOctaves)
@@ -208,7 +202,7 @@ class ScaleManager
 
 }
 
-class ChordCalculator
+class ChordManager
 {
     
 
