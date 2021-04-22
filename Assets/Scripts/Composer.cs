@@ -97,6 +97,23 @@ class ComposerController
         CalcAllowedNotes();
     }
 
+    private void CalcAllowedNotes()
+    {
+        int octaveCounter = 0;
+        for (int i = 0; i < allowedNotesSize; i++)
+        {
+            allowedNotes[i] = baseNote + scale[i % 7] + 12 * octaveCounter;
+            
+            if (i % 7 == 6) octaveCounter++;
+        }
+    }
+
+    
+    private void CalcAllowedChords()
+    {
+
+    }
+    
     public int NoteNameToNumber(string noteName)
     {
         if (noteNames.TryGetValue(noteName.ToLower(), out int number))
@@ -105,6 +122,7 @@ class ComposerController
         }
         return -1;
     }
+
     public bool IsInAllowedNotes(int num)
     {
         for (int i = 0; i < allowedNotesSize; i++)
@@ -117,16 +135,6 @@ class ComposerController
         return false;
     }
 
-    private void CalcAllowedNotes()
-    {
-        int octaveCounter = 0;
-        for (int i = 0; i < allowedNotesSize; i++)
-        {
-            allowedNotes[i] = baseNote + scale[i % 7] + 12 * octaveCounter;
-            //Debug.Log("ALLOWED------->" + allowedNotes[i]);
-            if (i % 7 == 6) octaveCounter++;
-        }
-    }
     private void InitScales()
     {
         majorScaleNotes[0] = 0;
