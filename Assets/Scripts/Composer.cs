@@ -55,16 +55,13 @@ public class Composer : MonoBehaviour
 class ComposerController
 {
     private Dictionary<string, int> noteNames;
-    private int[] majorScaleNotes;
-    private int[] minorScaleNotes;
-    private int[] scale;
 
-    private int[] allowedNotes;
-    private int allowedNotesSize;
 
     private int baseNote;
     private int scaleType;
     private int numOctaves;
+
+    private ScaleManager scaleManager;
 
     public ComposerController(int baseNote, int scaleType, int numOctaves)
     {
@@ -72,48 +69,12 @@ class ComposerController
         this.scaleType = scaleType;
         this.numOctaves = numOctaves;
 
-        scale = new int[7];
-        majorScaleNotes = new int[7];
-        minorScaleNotes = new int[7];
-        InitScales();
-
         noteNames = new Dictionary<string, int>();
         InitNoteNamesDict();
 
-        SetScale();
+        scaleManager = new ScaleManager(this.baseNote, this.scaleType, this.numOctaves);
     }
 
-    public void SetScale()
-    {
-        switch (scaleType)
-        {
-            case 1: minorScaleNotes.CopyTo(scale, 0); break;
-            case 2: majorScaleNotes.CopyTo(scale, 0); break;
-        }
-
-        allowedNotesSize = 7 * this.numOctaves;
-        allowedNotes = new int[allowedNotesSize];
-
-        CalcAllowedNotes();
-    }
-
-    private void CalcAllowedNotes()
-    {
-        int octaveCounter = 0;
-        for (int i = 0; i < allowedNotesSize; i++)
-        {
-            allowedNotes[i] = baseNote + scale[i % 7] + 12 * octaveCounter;
-            
-            if (i % 7 == 6) octaveCounter++;
-        }
-    }
-
-    
-    private void CalcAllowedChords()
-    {
-
-    }
-    
     public int NoteNameToNumber(string noteName)
     {
         if (noteNames.TryGetValue(noteName.ToLower(), out int number))
@@ -125,6 +86,89 @@ class ComposerController
 
     public bool IsInAllowedNotes(int num)
     {
+        return scaleManager.IsInAllowedScaleNotes(num);
+    }
+
+    private void InitNoteNamesDict()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            noteNames.Add("c" + i.ToString(), 12 * i);
+            noteNames.Add("cs" + i.ToString(), 1 + 12 * i);
+            noteNames.Add("d" + i.ToString(), 2 + 12 * i);
+            noteNames.Add("ds" + i.ToString(), 3 + 12 * i);
+            noteNames.Add("e" + i.ToString(), 4 + 12 * i);
+            noteNames.Add("f" + i.ToString(), 5 + 12 * i);
+            noteNames.Add("fs" + i.ToString(), 6 + 12 * i);
+            noteNames.Add("g" + i.ToString(), 7 + 12 * i);
+            noteNames.Add("gs" + i.ToString(), 8 + 12 * i);
+            noteNames.Add("a" + i.ToString(), 9 + 12 * i);
+            noteNames.Add("as" + i.ToString(), 10 + 12 * i);
+            noteNames.Add("b" + i.ToString(), 11 + 12 * i);
+        }
+    }
+}
+
+class ScaleManager
+{
+    private int[] majorScaleNotes;
+    private int[] minorScaleNotes;
+    private int[] scale;
+
+
+    private int[] allowedNotes;
+    private int allowedNotesSize;
+
+    int baseNote;
+    int scaleType;
+    int numOctaves;
+
+    public ScaleManager(int baseNote, int scaleType, int numOctaves)
+    {
+        this.baseNote = baseNote;
+        this.numOctaves = numOctaves;
+        this.scaleType = scaleType;
+
+        majorScaleNotes = new int[7];
+        minorScaleNotes = new int[7];
+        InitScales();
+
+        scale = new int[7];
+        SetScaleType();
+
+        CalculateScale(this.baseNote, this.scaleType, this.numOctaves);
+    }
+
+    public int[] GetAllowedNotes()
+    {
+        return allowedNotes;
+    }
+
+    public void CalculateScale(int baseNote, int scaleType, int numOctaves)
+    {
+        this.baseNote = baseNote;
+        this.numOctaves = numOctaves;
+        this.scaleType = scaleType;
+
+        allowedNotesSize = 7 * this.numOctaves;
+        allowedNotes = new int[allowedNotesSize];
+        
+        CalcAllowedNotes();
+    }
+
+    private void CalcAllowedNotes()
+    {
+        int octaveCounter = 0;
+        for (int i = 0; i < allowedNotesSize; i++)
+        {
+            allowedNotes[i] = baseNote + scale[i % 7] + 12 * octaveCounter;
+
+            if (i % 7 == 6) octaveCounter++;
+        }
+    }
+    
+    public bool IsInAllowedScaleNotes(int num)
+    {
         for (int i = 0; i < allowedNotesSize; i++)
         {
             if (allowedNotes[i] == num)
@@ -133,6 +177,14 @@ class ComposerController
             }
         }
         return false;
+    }
+
+    private void SetScaleType()
+    {
+        if (this.scaleType== 1)
+            minorScaleNotes.CopyTo(scale, 0);
+        else if (this.scaleType == 2)
+            majorScaleNotes.CopyTo(scale, 0);
     }
 
     private void InitScales()
@@ -154,22 +206,11 @@ class ComposerController
         minorScaleNotes[6] = 10;
     }
 
-    private void InitNoteNamesDict()
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            noteNames.Add("c" + i.ToString(), 12 * i);
-            noteNames.Add("cs" + i.ToString(), 1 + 12 * i);
-            noteNames.Add("d" + i.ToString(), 2 + 12 * i);
-            noteNames.Add("ds" + i.ToString(), 3 + 12 * i);
-            noteNames.Add("e" + i.ToString(), 4 + 12 * i);
-            noteNames.Add("f" + i.ToString(), 5 + 12 * i);
-            noteNames.Add("fs" + i.ToString(), 6 + 12 * i);
-            noteNames.Add("g" + i.ToString(), 7 + 12 * i);
-            noteNames.Add("gs" + i.ToString(), 8 + 12 * i);
-            noteNames.Add("a" + i.ToString(), 9 + 12 * i);
-            noteNames.Add("as" + i.ToString(), 10 + 12 * i);
-            noteNames.Add("b" + i.ToString(), 11 + 12 * i);
-        }
-    }
+}
+
+class ChordCalculator
+{
+    
+
+
 }
