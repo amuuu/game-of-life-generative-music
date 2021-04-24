@@ -305,11 +305,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ac2e7a281002c45a5c41853c7e6cbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioPrefab: {fileID: 1851398574213484117, guid: 969d2d83426b7a44392b257aa4562db2,
-    type: 3}
+  audioPrefab: {fileID: 0}
   scaleType: 1
-  baseNote: 24
+  baseNote: 36
   numOctaves: 4
+  isChordMode: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
