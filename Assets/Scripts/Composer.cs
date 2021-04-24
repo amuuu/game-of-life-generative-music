@@ -233,16 +233,12 @@ static class Utility
 
     public static int NoteNameToNumber(string name)
     {
-        // It CAN be done with dictionary pretty simply.
-
-        //  a  /  as  /  b  /  c  /  cs  /  d  /  ds  /  e  /  f  /  fs  /  g  /  gs  /
-
+        int result = 0;
+        
         int length = name.Length;
-
         int octave = int.Parse(name[length - 1].ToString());
 
-        int result = 0;
-        if (length == 3) // aka it's a # note (Because the name will be like As4 with the length of 3 chars.)
+        if (length == 3) // aka it's a sharp note (Because the name will be like As4 with the length of 3 chars.)
         {
             result = +1;
         }
