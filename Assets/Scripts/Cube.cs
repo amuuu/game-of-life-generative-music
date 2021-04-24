@@ -21,7 +21,7 @@ public class Cube : MonoBehaviour
 
         GameObject[] tmp = GameObject.FindGameObjectsWithTag("Sounds");
         int index =  Random.Range(0, tmp.Length);
-        
+
         audioSource = tmp[index].GetComponent<AudioSource>();
 
         float distance = Vector3.Distance(cameraTransform.position, transform.position);

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cube
   - Sounds
+  - Unusable
   layers:
   - Default
   - TransparentFX

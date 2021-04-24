@@ -1,7 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
+
+
+///define NUM_SCALE_NOTES = 7;
 
 // Composer chooses sound samples based on user's settings such as scale type.
 
@@ -17,12 +21,86 @@ public class Composer : MonoBehaviour
 
     private ComposerController controller;
 
+    private List<int> loadedNotes;
+    private Dictionary<GameObject, int> soundObjectsDict;
+
+
+    private float timeToGo;
+
+
     void Start()
     {
+        soundObjectsDict = new Dictionary<GameObject, int>();
+
+
+        timeToGo = Time.fixedTime + 1;
+
+        loadedNotes = new List<int>();
 
         controller = new ComposerController(baseNote, scaleType, numOctaves);
         
         ScanDirectory();
+
+        //StartCoroutine(ChordChangeCoroutine());
+
+    }
+
+    private void FixedUpdate()
+    {
+        if (Time.fixedTime >= timeToGo)
+        {
+            ChordChangeCoroutine();
+            timeToGo = Time.fixedTime + Random.Range(5,10);
+        }
+    }
+    
+    void ChordChangeCoroutine()
+    {
+        int[] allowedNotes = controller.GetNextChord();
+
+        foreach (int n in allowedNotes)
+        {
+            if (!ItemAlreadyExists(n))
+                LoadFilesWithNote(n);
+        }
+
+        int counter = 0;
+        foreach(int loadedNote in loadedNotes)
+        {
+            Debug.Log("NOTE:" + loadedNote);
+
+            foreach (int allowedNote in allowedNotes)
+            {
+                Debug.Log("ALLOWED NOTE:" + allowedNote);
+
+                if (allowedNote != loadedNote)
+                {
+                    ToggleSoundObject(loadedNote, false);
+                }
+                else
+                {
+                    ToggleSoundObject(loadedNote, true);
+                }
+            }
+        }
+        Debug.Log("MATCHES LEN ->>>>>" + counter);
+
+    }
+
+    void ToggleSoundObject(int value, bool newState)
+    {
+        foreach (KeyValuePair<GameObject, int> pair in soundObjectsDict)
+        {
+            if (EqualityComparer<int>.Default.Equals(pair.Value, value))
+            {
+                //pair.Key.SetActive(newState);
+
+                if (newState)
+                    pair.Key.tag = "Sounds";
+                else
+                    pair.Key.tag = "Unusable";
+            }
+        }
     }
 
     void ScanDirectory()
@@ -43,12 +121,57 @@ public class Composer : MonoBehaviour
 
             if ((noteNum != -1) && controller.IsInAllowedNotes(noteNum))
             {
+                loadedNotes.Add(noteNum);
+
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
                 
+                soundObjectsDict.Add(tmp, noteNum);
+
                 print("LOADED: " + f.Name);
             }
         }
+    }
+
+    void LoadFilesWithNote(int noteNumber)
+    {
+        string PATH = "Samples/";
+
+        DirectoryInfo dir = new DirectoryInfo("Assets/Resources/" + PATH);
+
+        FileInfo[] info = dir.GetFiles("*.wav");
+
+        foreach (FileInfo f in info)
+        {
+            // print("Found: " + f.Name);
+
+            string[] splittedName = f.Name.Split('-');
+
+            int noteNum = controller.NoteNameToNumber(splittedName[0]);
+
+            if (noteNum == noteNumber)
+            {
+                loadedNotes.Add(noteNum);
+
+                GameObject tmp = Instantiate(audioPrefab);
+                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(PATH + f.Name.Replace(".wav", ""));
+                
+                soundObjectsDict.Add(tmp, noteNum);
+
+
+                //print("LOADED ON RUNTIME: " + f.Name);
+            }
+        }
+    }
+
+    private bool ItemAlreadyExists(int target)
+    {
+        foreach (int item in loadedNotes)
+        {
+            if (item.Equals(target))
+                return true;
+        }
+        return false;
     }
 }
 
@@ -74,6 +197,12 @@ class ComposerController
         scaleManager = new ScaleManager(this.baseNote, this.scaleType, this.numOctaves);
     }
 
+    public int[] GetNextChord()
+    {
+        scaleManager.SetRandomChordInScale();
+        scaleManager.CalcAllowedNotes(true);
+        return scaleManager.GetAllowedNotes();
+    }
 
     public int NoteNameToNumber(string noteName)
     {
@@ -87,6 +216,11 @@ class ComposerController
     public bool IsInAllowedNotes(int num)
     {
         return scaleManager.IsInAllowedScaleNotes(num);
+    }
+
+    public int[] GetAllowedNotes()
+    {
+        return scaleManager.GetAllowedNotes();
     }
 
     private void InitNoteNamesDict()
@@ -131,6 +265,8 @@ class ScaleManager
     public int[] currentChord;
     private ChordManager chordManager;
 
+    private int currentChordBaseNoteIndex;
+
 
     public ScaleManager(int baseNote, int scaleType, int numOctaves)
     {
@@ -143,6 +279,7 @@ class ScaleManager
 
         minorScaleNotes = new int[7];
         minorScaleChords = new string[7];
+        scaleChords = new string[7];
 
         InitScales();
 
@@ -151,9 +288,14 @@ class ScaleManager
 
         CalculateScale(this.baseNote, this.scaleType, this.numOctaves);
 
+        currentChord = new int[3];
+
         chordManager = new ChordManager();
-        GetRandomChordInScale();
-        
+    }
+
+    public int[] GetAllowedNotes()
+    {
+        return allowedNotes;
     }
 
     public void CalculateScale(int baseNote, int scaleType, int numOctaves)
@@ -165,11 +307,16 @@ class ScaleManager
         CalcAllowedNotes(false);
     }
 
-    public void GetRandomChordInScale()
+    public void SetRandomChordInScale()
     {
         
         int index = Random.Range(0, 7);
+        currentChordBaseNoteIndex = index;
+
+        Debug.Log("NEW CHORD INDEX::::::" + index);
+        Debug.Log("NEW CHORD TYPE::::::" + scaleChords[index]);
         string[] notes = chordManager.GetChordNotes(scaleChords[index]);
+
         int[] result = new int[notes.Length];
 
         for (int i=0; i< notes.Length; i++)
@@ -180,20 +327,30 @@ class ScaleManager
             }
             else
             {
-                result[i] = int.Parse(notes[i])-1;
+                result[i] = int.Parse(notes[i].Replace("b",""))-1;
             }
         }
 
         result.CopyTo(currentChord, 0);
     }
 
-    private void CalcAllowedNotes(bool isChordMode)
+    public void CalcAllowedNotes(bool isChordMode)
     {
         int baseVal;
+        int[] notes;
         if (!isChordMode)
+        {
             baseVal = 7;
+            notes = new int[7];
+            scale.CopyTo(notes, 0);
+        }
         else
+        {
             baseVal = currentChord.Length;
+            //Debug.Log("BASE VAL:::::" + baseVal);
+            notes = new int[baseVal];
+            currentChord.CopyTo(notes, 0);
+        }
      
         allowedNotesSize = baseVal * this.numOctaves;
         allowedNotes = new int[allowedNotesSize];
@@ -201,9 +358,13 @@ class ScaleManager
         int octaveCounter = 0;
         for (int i = 0; i < allowedNotesSize; i++)
         {
-            allowedNotes[i] = baseNote + currentChord[i % baseVal] + 12 * octaveCounter;
+            allowedNotes[i] = baseNote + notes[i % baseVal] + 12 * octaveCounter;
+            if (isChordMode)
+                allowedNotes[i] += scale[currentChordBaseNoteIndex];
 
-            if (i % 7 == 6) octaveCounter++;
+
+            //Debug.Log("Allowed;;;;" + allowedNotes[i]);
+            if (i % baseVal == baseVal-1) octaveCounter++;
         }
     }
     
@@ -268,7 +429,6 @@ class ScaleManager
         minorScaleChords[5] = "M";
         minorScaleChords[6] = "M";
     }
-
 }
 
 class ChordManager
@@ -277,6 +437,7 @@ class ChordManager
 
     public ChordManager()
     {
+        chordTypes = new Dictionary<string, string[]>();
         InitChordTypes();
     }
 
@@ -289,6 +450,11 @@ class ChordManager
 
     public string[] GetChordNotes(string name)
     {
-        return (0, 0, 0);
+        if (chordTypes.TryGetValue(name, out string[] result))
+        {
+            return result;
+        }
+        return null;
+        
     }
 }
