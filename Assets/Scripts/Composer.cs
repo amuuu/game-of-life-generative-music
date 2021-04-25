@@ -35,7 +35,11 @@ public class Composer : MonoBehaviour
     public bool isChordMode = false;
     public bool fileLoadStats = false;
 
-    public float delay = 10;
+    public bool randomTimeMode = false;
+    [Range(5.0f, 9.0f)] public float minDelay = 5;
+    [Range(10.0f, 15.0f)] public float maxDelay = 10;
+    private float delay;
+
     private float time;
 
     private string samplesRootPath = "Samples/";
@@ -54,8 +58,9 @@ public class Composer : MonoBehaviour
         dir = new DirectoryInfo("Assets/Resources/" + samplesRootPath);
         info = dir.GetFiles("*.wav");
 
-
-        time = Time.fixedTime + delay;
+        time = Time.fixedTime;
+        if (!randomTimeMode) delay = minDelay;
+        
 
         controller = new ComposerController(scaleType, baseNote, numOctaves);
         sounds = new List<SoundObject>();
@@ -75,6 +80,7 @@ public class Composer : MonoBehaviour
                 nextChord = controller.scale.GetRandomChordInScale();
                 ManageSamplesBasedOnNextChord();
 
+                if(randomTimeMode) delay = UnityEngine.Random.Range(minDelay, maxDelay);
                 time = Time.fixedTime + delay;
             }
         }
