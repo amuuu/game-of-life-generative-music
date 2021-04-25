@@ -9,6 +9,7 @@ public struct Settings
     public int scaleType; // 1:minor / 2:major
     public int baseNote; // c2: 36 c8: 88
     public int numOctaves; // 3
+
 }
 
 public struct SoundObject
@@ -16,6 +17,11 @@ public struct SoundObject
     public GameObject obj;
     public int noteNumber;
     public bool isEnabled;
+
+    public void SetActive(bool b)
+    {
+        isEnabled = b;
+    }
 }
 
 public class Composer : MonoBehaviour
@@ -27,6 +33,7 @@ public class Composer : MonoBehaviour
     public int baseNote; // c2: 36 c8: 88
     public int numOctaves; // 3
     public bool isChordMode = false;
+    public bool fileLoadStats = false;
 
     public float delay = 10;
     private float time;
@@ -63,6 +70,7 @@ public class Composer : MonoBehaviour
         if (isChordMode)
         {
             if (Time.fixedTime >= time)
+            //if(Input.GetKeyDown(KeyCode.L))
             {
                 nextChord = controller.scale.GetRandomChordInScale();
                 ManageSamplesBasedOnNextChord();
@@ -88,7 +96,9 @@ public class Composer : MonoBehaviour
                 { 
                     exists = true;
                     if (!s.obj.activeSelf)
+                    {
                         s.obj.SetActive(true);
+                    }
                 }
             }
 
@@ -100,10 +110,14 @@ public class Composer : MonoBehaviour
         }
 
         // if note isn't in the chord but has been loaded before
+        int counter = 0;
         foreach (SoundObject s in sounds)
         {
             if (!Utility.ChordContainsNote(nextChord, s.noteNumber))
+            {
                 s.obj.SetActive(false);
+            }
+            else counter++;
         }
     }
 
@@ -115,7 +129,7 @@ public class Composer : MonoBehaviour
 
             string[] splittedName = f.Name.Split('-');
 
-            int noteNum = Utility.NoteNameToNumber(splittedName[0]);
+            int noteNum = Utility.NoteNameToNumber(splittedName[0].ToLower());
 
             if ((noteNum != -1) && controller.scale.IsInScaleNotes(noteNum))
             {
@@ -124,28 +138,31 @@ public class Composer : MonoBehaviour
                 
                 sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
 
-                //print("LOADED: " + f.Name);
+                if (fileLoadStats)
+                    print("LOADED: " + f.Name);
             }
         }
     }
 
     void LoadFilesWithNote(int noteNumber)
     {
+        dir = new DirectoryInfo("Assets/Resources/" + samplesRootPath);
+        info = dir.GetFiles("*.wav");
         foreach (FileInfo f in info)
         {
-            // print("Found: " + f.Name);
-
             string[] splittedName = f.Name.Split('-');
 
-            int noteNum = Utility.NoteNameToNumber(splittedName[0]);
-
+            int noteNum = Utility.NoteNameToNumber(splittedName[0].ToLower());
             if (noteNum == noteNumber)
             {
+
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(samplesRootPath + f.Name.Replace(".wav", ""));
 
                 sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
-                //print("LOADED ON RUNTIME: " + f.Name);
+                
+                if (fileLoadStats)
+                    print("LOADED ON RUNTIME: " + f.Name);
             }
         }
     }
@@ -163,7 +180,7 @@ class ComposerController
         settings.baseNote = baseNote;
         settings.numOctaves = numOctaves;
 
-        scale = new Scale(settings.scaleType, settings.baseNote, settings.numOctaves);
+        scale = new Scale(scaleType, baseNote, numOctaves);
     }
 }
 
@@ -256,7 +273,6 @@ class Chord
 class Note
 {
     public int number;
-    public string name;
 
     public Note(int n)
     {
@@ -273,7 +289,7 @@ static class Utility
         Note[] result = new Note[size];
         for (int i = 0; i < size; i++)
         {
-            result[i] = new Note(baseNote + notes[i % notes.Length].number + 12 * (i % numOctaves));
+            result[i] = new Note(baseNote + notes[i % notes.Length].number + 12 * ((i / numOctaves)));
         }
 
         return result;
@@ -365,9 +381,10 @@ static class Utility
         foreach(Note n in chord)
         {
             if (n.number == number)
+            {
                 return true;
+            }
         }
-
         return false;
     }
 }

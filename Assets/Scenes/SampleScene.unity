@@ -311,6 +311,7 @@ MonoBehaviour:
   baseNote: 36
   numOctaves: 4
   isChordMode: 1
+  fileLoadStats: 0
   delay: 5
 --- !u!1 &963194225
 GameObject:
