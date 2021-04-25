@@ -9,9 +9,15 @@ public struct Settings
     public int scaleType; // 1:minor / 2:major
     public int baseNote; // c2: 36 c8: 88
     public int numOctaves; // 3
-
-    
 }
+
+public struct SoundObject
+{
+    public GameObject obj;
+    public int noteNumber;
+    public bool isEnabled;
+}
+
 public class Composer : MonoBehaviour
 {
 
@@ -27,6 +33,8 @@ public class Composer : MonoBehaviour
 
     private string samplesRootPath = "Samples/";
 
+    private List<SoundObject> sounds;
+
     ///////////////
     private ComposerController controller;
     private DirectoryInfo dir;
@@ -35,9 +43,15 @@ public class Composer : MonoBehaviour
 
     void Start()
     {
+
+        dir = new DirectoryInfo("Assets/Resources/" + samplesRootPath);
+        info = dir.GetFiles("*.wav");
+
+
         time = Time.fixedTime + delay;
 
         controller = new ComposerController(scaleType, baseNote, numOctaves);
+        sounds = new List<SoundObject>();
 
         // scan the directory and load all the sounds in the scale
         ScanDirectory();
@@ -63,13 +77,38 @@ public class Composer : MonoBehaviour
     {
         // if the note that's inside the chord isn't loaded before, load the corresponding samples
         // if a note is loaded but it's not in the chord, diactive the corresponding samples
+        bool exists;
+
+        foreach (Note n in nextChord)
+        {
+            exists = false;
+            foreach (SoundObject s in sounds)
+            {
+                if (s.noteNumber == n.number)
+                { 
+                    exists = true;
+                    if (!s.obj.activeSelf)
+                        s.obj.SetActive(true);
+                }
+            }
+
+            if (!exists)
+            {
+                // if note is in the chord but not on the loaded sounds
+                LoadFilesWithNote(n.number);
+            }
+        }
+
+        // if note isn't in the chord but has been loaded before
+        foreach (SoundObject s in sounds)
+        {
+            if (!Utility.ChordContainsNote(nextChord, s.noteNumber))
+                s.obj.SetActive(false);
+        }
     }
 
     void ScanDirectory()
     {
-        dir = new DirectoryInfo("Assets/Resources/" + samplesRootPath);
-        info = dir.GetFiles("*.wav");
-
         foreach (FileInfo f in info)
         {
             // print("Found: " + f.Name);
@@ -82,16 +121,34 @@ public class Composer : MonoBehaviour
             {
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(samplesRootPath + f.Name.Replace(".wav", ""));
+                
+                sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
 
-                print("LOADED: " + f.Name);
+                //print("LOADED: " + f.Name);
             }
         }
     }
 
     void LoadFilesWithNote(int noteNumber)
     {
-    }
+        foreach (FileInfo f in info)
+        {
+            // print("Found: " + f.Name);
 
+            string[] splittedName = f.Name.Split('-');
+
+            int noteNum = Utility.NoteNameToNumber(splittedName[0]);
+
+            if (noteNum == noteNumber)
+            {
+                GameObject tmp = Instantiate(audioPrefab);
+                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(samplesRootPath + f.Name.Replace(".wav", ""));
+
+                sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
+                //print("LOADED ON RUNTIME: " + f.Name);
+            }
+        }
+    }
 }
 
 class ComposerController
@@ -144,7 +201,8 @@ class Scale
 
     public Note[] GetRandomChordInScale()
     {
-        return chords[UnityEngine.Random.Range(0, chords.Length)].GetChordNotes(settings.baseNote, settings.numOctaves);
+        int index = UnityEngine.Random.Range(0, notes.Length);
+        return chords[index].GetChordNotes(settings.baseNote + index, settings.numOctaves);
     }
 
     public void CalculateScaleNotes()
@@ -166,9 +224,9 @@ class Chord
     {
         switch(type)
         {
-            case "m": notes = new Note[3] { scale[baseNoteIndex], scale[baseNoteIndex+2], scale[baseNoteIndex+4] }; break;
-            case "M": notes = new Note[3] { scale[baseNoteIndex], new Note(scale[baseNoteIndex+2].number-1), scale[baseNoteIndex+4] }; break;
-            case "dim": notes = new Note[3] { scale[baseNoteIndex], new Note(scale[baseNoteIndex + 2].number - 1), new Note(scale[baseNoteIndex + 4].number-1) }; break;
+            case "M": notes = new Note[3] { scale[(baseNoteIndex) % 7], scale[(baseNoteIndex + 2) % 7], scale[(baseNoteIndex + 4 ) % 7] }; break;
+            case "m": notes = new Note[3] { scale[(baseNoteIndex) % 7], new Note((scale[(baseNoteIndex + 2) % 7].number - 1) % 12), scale[(baseNoteIndex + 4) % 7] }; break;
+            case "dim": notes = new Note[3] { scale[(baseNoteIndex) % 7], new Note((scale[(baseNoteIndex + 2) % 7].number - 1) % 12), new Note((scale[(baseNoteIndex + 4) % 7].number - 1) % 12) }; break;
             default: break;
         }
     }
@@ -213,10 +271,9 @@ static class Utility
     {
         int size = notes.Length * numOctaves;
         Note[] result = new Note[size];
-
         for (int i = 0; i < size; i++)
         {
-            result[i] = new Note(baseNote + notes[i % notes.Length].number + (i % 12));
+            result[i] = new Note(baseNote + notes[i % notes.Length].number + 12 * (i % numOctaves));
         }
 
         return result;
@@ -291,15 +348,26 @@ static class Utility
         }
         else if (type == 2)
         {
-            chords[2] = new Chord("M", 0, notes);
-            chords[3] = new Chord("m", 1, notes);
-            chords[4] = new Chord("m", 2, notes);
-            chords[5] = new Chord("M", 3, notes);
-            chords[6] = new Chord("M", 4, notes);
-            chords[0] = new Chord("m", 5, notes);
-            chords[1] = new Chord("dim", 6, notes);
+            chords[0] = new Chord("M", 0, notes);
+            chords[1] = new Chord("m", 1, notes);
+            chords[2] = new Chord("m", 2, notes);
+            chords[3] = new Chord("M", 3, notes);
+            chords[4] = new Chord("M", 4, notes);
+            chords[5] = new Chord("m", 5, notes);
+            chords[6] = new Chord("dim", 6, notes);
         }
         
         return chords;
+    }
+
+    public static bool ChordContainsNote(Note[]chord, int number)
+    {
+        foreach(Note n in chord)
+        {
+            if (n.number == number)
+                return true;
+        }
+
+        return false;
     }
 }
