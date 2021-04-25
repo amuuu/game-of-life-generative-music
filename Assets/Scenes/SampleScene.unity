@@ -307,12 +307,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioPrefab: {fileID: 1851398574213484117, guid: 969d2d83426b7a44392b257aa4562db2,
     type: 3}
-  scaleType: 2
-  baseNote: 36
-  numOctaves: 4
+  scaleType: 1
+  baseNote: 30
+  numOctaves: 3
   isChordMode: 1
   fileLoadStats: 0
-  delay: 5
+  delay: 7
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
