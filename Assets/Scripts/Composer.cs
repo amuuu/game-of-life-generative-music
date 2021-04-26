@@ -224,7 +224,19 @@ class Scale
 
     public Note[] GetRandomChordInScale()
     {
-        int index = UnityEngine.Random.Range(0, notes.Length);
+        int index = 0;
+        float f = UnityEngine.Random.Range(0f, 1f);
+        if (f > 0.75f) index = 0;
+        else if (f < 0.75 && f > 0.50) index = 3;
+        else if (f < 0.50 && f > 0.35) index = 4;
+        else
+        {
+            index = UnityEngine.Random.Range(3, notes.Length);
+            if (index == 3) index = 1;
+            if (index == 4) index = 2;
+
+        }
+
         return chords[index].GetChordNotes(settings.baseNote + index, settings.numOctaves);
     }
 
