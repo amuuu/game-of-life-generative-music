@@ -169,13 +169,13 @@ MonoBehaviour:
   cubePrefab2: {fileID: 3830003512957174274, guid: d6038a564d4dcc842bda12353b753fa5,
     type: 3}
   mainCamera: {fileID: 963194227}
-  generationCycleDelay: 1
+  generationCycleDelay: 5
   maxMapSize: 70
   maxMapHeight: 15
   cubeMargin: 23
   randomParticlesNumber: 0
   presetStructuresNumber: 100
-  eyeSightRadius: 500
+  eyeSightRadius: 1000
   hearingRadius: 300
   baseVol: 0.12
   scale: 2
@@ -511,7 +511,8 @@ MonoBehaviour:
   isChordMode: 1
   fileLoadStats: 0
   randomTimeMode: 1
-  initialDelay: 10
+  minDelay: 9
+  maxDelay: 15
 --- !u!1 &515419371
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,7 +619,7 @@ GameObject:
   - component: {fileID: 963194226}
   m_Layer: 0
   m_Name: Main Camera (projection mode)
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -829,8 +830,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efc8e0ccc00bd1640b52b9653a49c778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 963194228}
-  mainCamera: {fileID: 963194225}
+  cameraTransform: {fileID: 235398436}
+  mainCamera: {fileID: 235398435}
   birdsEye: {fileID: 351376116}
   normalSpeed: 5
   fastSpeed: 15

@@ -121,7 +121,8 @@ public class Generator : MonoBehaviour
     IEnumerator InstantiateCoroutine(int prefab, float time, int x, int y, int z, float tmpXCoord, float tmpYCoord, float tmpZCoord)
     {
         yield return new WaitForSeconds(time);
-        if(prefab == 1)
+        
+        if (prefab == 1)
             mapObjs[x, y, z] = Instantiate(cubePrefab, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
         else if (prefab == 2)
             mapObjs[x, y, z] = Instantiate(cubePrefab2, new Vector3(tmpXCoord, tmpYCoord, tmpZCoord), Quaternion.identity);
