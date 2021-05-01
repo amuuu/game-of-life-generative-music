@@ -9,7 +9,6 @@ public struct Settings
     public int scaleType; // 1:minor / 2:major
     public int baseNote; // c2: 36 c8: 88
     public int numOctaves; // 3
-
 }
 
 public struct SoundObject
@@ -26,7 +25,6 @@ public struct SoundObject
 
 public class Composer : MonoBehaviour
 {
-
     public GameObject audioPrefab;
 
     public int scaleType; // 1:minor / 2:major
@@ -34,28 +32,22 @@ public class Composer : MonoBehaviour
     public int numOctaves; // 3
     public bool isChordMode = false;
     public bool isChordProgressionMode = false;
-
     public bool randomTimeMode = false;
     [Range(5.0f, 9.0f)] public float minDelay = 5;
     [Range(10.0f, 15.0f)] public float maxDelay = 10;
-    
     public bool fileLoadStats = false;
-
+    
     private float delay;
-
     private float time;
     private string samplesRootPath = "Samples/";
-
     private List<SoundObject> sounds;
-    ///////////////
     private ComposerController controller;
     private DirectoryInfo dir;
     FileInfo[] info;
-    private Note[] nextChord;
+    private Note[] nextChordNotes;
 
     void Start()
     {
-
         dir = new DirectoryInfo("Assets/Resources/" + samplesRootPath);
         info = dir.GetFiles("*.wav");
 
@@ -79,9 +71,9 @@ public class Composer : MonoBehaviour
             //if(Input.GetKeyDown(KeyCode.L))
             {
                 if(!isChordProgressionMode)
-                    nextChord = controller.scale.GetRandomChordInScale();
+                    nextChordNotes = controller.scale.GetRandomChordInScale();
                 else
-                    nextChord = controller.scale.GetNextChordInChordProgression();
+                    nextChordNotes = controller.scale.GetNextChordInChordProgression();
 
                 ManageSamplesBasedOnNextChord();
 
@@ -91,14 +83,13 @@ public class Composer : MonoBehaviour
         }
     }
 
-
     void ManageSamplesBasedOnNextChord()
     {
         // if the note that's inside the chord isn't loaded before, load the corresponding samples
         // if a note is loaded but it's not in the chord, diactive the corresponding samples
         bool exists;
 
-        foreach (Note n in nextChord)
+        foreach (Note n in nextChordNotes)
         {
             exists = false;
             foreach (SoundObject s in sounds)
@@ -124,7 +115,8 @@ public class Composer : MonoBehaviour
         int counter = 0;
         foreach (SoundObject s in sounds)
         {
-            if (!Utility.ChordContainsNote(nextChord, s.noteNumber))
+            //if (!nextChord.ChordContainsNote(s.noteNumber))
+            if (!Utility.ArrayContains(nextChordNotes, s.noteNumber))
             {
                 s.obj.SetActive(false);
             }
@@ -181,7 +173,6 @@ public class Composer : MonoBehaviour
 
 class ComposerController
 {
-
     public Scale scale;
     private Settings settings;
 
@@ -245,6 +236,7 @@ class Scale
 
     public void GenerateNextChordProgression()
     {
+        // TODO: Load from files.
         List<int[]> options = new List<int[]>();
         options.Add(new int[4] { 0, 2, 6, 4 });
         options.Add(new int[5] { 0, 2, 3, 2, 4 });
@@ -291,9 +283,10 @@ class Scale
     }
 }
 
-class Chord
+public class Chord
 {
     Note[] notes;
+    string typeName;
 
     public Chord(string type, int baseNoteIndex, Note[] scale)
     {
@@ -311,7 +304,7 @@ class Chord
         return notes;
     }
 
-    public bool IsInChordNotes(int noteIndex)
+    public bool ChordContainsNote(int noteIndex)
     {
         foreach (Note n in notes)
         {
@@ -328,7 +321,12 @@ class Chord
     }
 }
 
-class Note
+public class MinorChord : Chord
+{
+
+}
+
+public class Note
 {
     public int number;
 
@@ -339,7 +337,7 @@ class Note
 
 }
 
-static class Utility
+public static class Utility
 {
     public static Note[] ExpandNotesIntoOctaves(Note[] notes, int baseNote, int numOctaves)
     {
@@ -434,7 +432,7 @@ static class Utility
         return chords;
     }
 
-    public static bool ChordContainsNote(Note[]chord, int number)
+    public static bool ArrayContains(Note[]chord, int number)
     {
         foreach(Note n in chord)
         {
