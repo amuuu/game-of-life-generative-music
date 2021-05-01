@@ -20,31 +20,32 @@ class Composer
         settings.baseNote = baseNote;
         settings.numOctaves = numOctaves;
 
-        scale = new Scale(scaleType, baseNote, numOctaves);
+        if(scaleType == 1)
+            scale = new MinorScale(baseNote, numOctaves);
+        else if (scaleType == 2)
+            scale = new MajorScale(baseNote, numOctaves);
     }
 }
 
 
-class Scale
+public abstract class Scale
 {
-    Note[] notes;
-    Chord[] chords;
-    int[] chordProgression;
-    int currentChordIndex;
 
-    Settings settings;
+    private int type;
+    protected Note[] notes;
+    protected Chord[] chords;
+    protected int[] chordProgression;
+    protected int currentChordIndex;
+
+    protected Settings settings;
 
     public Scale(int type, int baseNote, int numOctaves)
     {
         settings.scaleType = type;
         settings.baseNote = baseNote;
         settings.numOctaves = numOctaves;
-
+        
         currentChordIndex = 0;
-
-        CalculateScaleNotes();
-        CalculateScaleChords();
-        GenerateNextChordProgression();
     }
 
     public bool IsInScaleNotes(int noteNumber)
@@ -111,15 +112,79 @@ class Scale
         return chords[index].GetChordNotes(settings.baseNote + index, settings.numOctaves);
     }
 
-    public void CalculateScaleNotes()
+    public abstract void CalculateNotes();
+    public abstract void CalculateChords();
+
+}
+
+public class MinorScale : Scale
+{
+    public MinorScale(int baseNote, int numOctaves) : base(1, baseNote, numOctaves)
     {
-        notes = Utility.GetScaleNotes(settings.scaleType);
+        CalculateNotes();
+        CalculateChords();
+        GenerateNextChordProgression();
     }
 
-    public void CalculateScaleChords()
+    override public void CalculateNotes()
     {
-        chords = Utility.GetScaleChords(settings.scaleType, notes);
+        notes = new Note[7];
+        notes[0] = new Note(0);
+        notes[1] = new Note(2);
+        notes[2] = new Note(3);
+        notes[3] = new Note(5);
+        notes[4] = new Note(7);
+        notes[5] = new Note(8);
+        notes[6] = new Note(10);
     }
+
+    override public void CalculateChords()
+    {
+        chords = new Chord[7];
+        chords[0] = new MinorChord(0, notes);
+        chords[1] = new DimChord(1, notes);
+        chords[2] = new MajorChord(2, notes);
+        chords[3] = new MinorChord(3, notes);
+        chords[4] = new MinorChord(4, notes);
+        chords[5] = new MajorChord(5, notes);
+        chords[6] = new MajorChord(6, notes);
+    }
+
+}
+
+public class MajorScale : Scale
+{
+    public MajorScale(int baseNote, int numOctaves) : base(2, baseNote, numOctaves)
+    {
+        CalculateNotes();
+        CalculateChords();
+        GenerateNextChordProgression();
+    }
+
+    override public void CalculateNotes()
+    {
+        notes = new Note[7];
+        notes[0] = new Note(0);
+        notes[1] = new Note(2);
+        notes[2] = new Note(4);
+        notes[3] = new Note(5);
+        notes[4] = new Note(7);
+        notes[5] = new Note(9);
+        notes[6] = new Note(11);
+    }
+
+    override public void CalculateChords()
+    {
+        chords = new Chord[7];
+        chords[0] = new MajorChord(0, notes);
+        chords[1] = new MinorChord(1, notes);
+        chords[2] = new MinorChord(2, notes);
+        chords[3] = new MajorChord(3, notes);
+        chords[4] = new MajorChord(4, notes);
+        chords[5] = new MinorChord(5, notes);
+        chords[6] = new DimChord(6, notes);
+    }
+
 }
 
 public abstract class Chord
@@ -232,60 +297,6 @@ public static class Utility
         result += 12 * octave;
 
         return result;
-    }
-
-    public static Note[] GetScaleNotes(int type)
-    {
-        Note[] notes = new Note[7];
-        if (type == 1)
-        {
-            notes[0] = new Note(0);
-            notes[1] = new Note(2);
-            notes[2] = new Note(3);
-            notes[3] = new Note(5);
-            notes[4] = new Note(7);
-            notes[5] = new Note(8);
-            notes[6] = new Note(10);
-        }
-        else if (type == 2)
-        {
-            notes[0] = new Note(0);
-            notes[1] = new Note(2);
-            notes[2] = new Note(4);
-            notes[3] = new Note(5);
-            notes[4] = new Note(7);
-            notes[5] = new Note(9);
-            notes[6] = new Note(11);
-        }
-        return notes;
-    }
-
-    public static Chord[] GetScaleChords(int type, Note[] notes)
-    {
-        Chord[] chords = new Chord[7];
-
-        if (type == 1)
-        {
-            chords[0] = new MinorChord(0, notes);
-            chords[1] = new DimChord(1, notes);
-            chords[2] = new MajorChord(2, notes);
-            chords[3] = new MinorChord(3, notes);
-            chords[4] = new MinorChord(4, notes);
-            chords[5] = new MajorChord(5, notes);
-            chords[6] = new MajorChord(6, notes);
-        }
-        else if (type == 2)
-        {
-            chords[0] = new MajorChord(0, notes);
-            chords[1] = new MinorChord(1, notes);
-            chords[2] = new MinorChord(2, notes);
-            chords[3] = new MajorChord(3, notes);
-            chords[4] = new MajorChord(4, notes);
-            chords[5] = new MinorChord(5, notes);
-            chords[6] = new DimChord(6, notes);
-        }
-
-        return chords;
     }
 
     public static bool ArrayContains(Note[] chord, int number)
