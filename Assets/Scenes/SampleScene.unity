@@ -175,7 +175,7 @@ MonoBehaviour:
   cubeMargin: 20
   randomParticlesNumber: 0
   presetStructuresNumber: 150
-  eyeSightRadius: 800
+  eyeSightRadius: 500
   hearingRadius: 300
   baseVol: 0.12
   scale: 2
@@ -426,6 +426,7 @@ MonoBehaviour:
   baseNote: 38
   numOctaves: 3
   isChordMode: 1
+  isChordProgressionMode: 1
   fileLoadStats: 0
   randomTimeMode: 1
   minDelay: 9

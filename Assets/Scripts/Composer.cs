@@ -34,19 +34,19 @@ public class Composer : MonoBehaviour
     public int numOctaves; // 3
     public bool isChordMode = false;
     public bool isChordProgressionMode = false;
-    public bool fileLoadStats = false;
 
     public bool randomTimeMode = false;
     [Range(5.0f, 9.0f)] public float minDelay = 5;
     [Range(10.0f, 15.0f)] public float maxDelay = 10;
+    
+    public bool fileLoadStats = false;
+
     private float delay;
 
     private float time;
-
     private string samplesRootPath = "Samples/";
 
     private List<SoundObject> sounds;
-
     ///////////////
     private ComposerController controller;
     private DirectoryInfo dir;
@@ -235,9 +235,12 @@ class Scale
 
     public Note[] GetNextChordInChordProgression()
     {
-        if (currentChordIndex + 1 == chordProgression.Length) currentChordIndex = 0;
+        if (currentChordIndex + 1 >= chordProgression.Length) currentChordIndex = 0;
         
-        return chords[chordProgression[currentChordIndex++]].GetChordNotes(settings.baseNote + chordProgression[currentChordIndex++], settings.numOctaves);
+        //Debug.ClearDeveloperConsole();
+        //Debug.Log("Current Chord ::::" + currentChordIndex + "  " + (char)(UnityEngine.Random.Range(50, 150)));
+
+        return chords[chordProgression[currentChordIndex]].GetChordNotes(settings.baseNote + chordProgression[currentChordIndex++], settings.numOctaves);
     }
 
     public void GenerateNextChordProgression()
@@ -248,11 +251,14 @@ class Scale
 
         int index = UnityEngine.Random.Range(0, options.Count);
 
+        //Debug.Log("Current Chord Progression ::::" + index);
+        
         chordProgression = new int[options.ToArray()[index].Length];
         int i = 0;
         foreach(int n in options.ToArray()[index])
         {
-            chordProgression[i++] = n;
+            chordProgression[i] = n;
+            i++;
         }
     }
 
