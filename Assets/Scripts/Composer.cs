@@ -33,6 +33,7 @@ public class Composer : MonoBehaviour
     public int baseNote; // c2: 36 c8: 88
     public int numOctaves; // 3
     public bool isChordMode = false;
+    public bool isChordProgressionMode = false;
     public bool fileLoadStats = false;
 
     public bool randomTimeMode = false;
@@ -77,7 +78,11 @@ public class Composer : MonoBehaviour
             if (Time.fixedTime >= time)
             //if(Input.GetKeyDown(KeyCode.L))
             {
-                nextChord = controller.scale.GetRandomChordInScale();
+                if(!isChordProgressionMode)
+                    nextChord = controller.scale.GetRandomChordInScale();
+                else
+                    nextChord = controller.scale.GetNextChordInChordProgression();
+
                 ManageSamplesBasedOnNextChord();
 
                 if(randomTimeMode) delay = UnityEngine.Random.Range(minDelay, maxDelay);
@@ -194,6 +199,9 @@ class Scale
 {
     Note[] notes;
     Chord[] chords;
+    int[] chordProgression;
+    int currentChordIndex;
+    
     Settings settings;
 
     public Scale(int type, int baseNote, int numOctaves)
@@ -202,8 +210,11 @@ class Scale
         settings.baseNote = baseNote;
         settings.numOctaves = numOctaves;
 
+        currentChordIndex = 0;
+
         CalculateScaleNotes();
         CalculateScaleChords();
+        GenerateNextChordProgression();
     }
 
     public bool IsInScaleNotes(int noteNumber)
@@ -220,6 +231,29 @@ class Scale
     public Note[] GetAllowedNotesInScale()
     {
         return Utility.ExpandNotesIntoOctaves(notes, settings.baseNote, settings.numOctaves);
+    }
+
+    public Note[] GetNextChordInChordProgression()
+    {
+        if (currentChordIndex + 1 == chordProgression.Length) currentChordIndex = 0;
+        
+        return chords[chordProgression[currentChordIndex++]].GetChordNotes(settings.baseNote + chordProgression[currentChordIndex++], settings.numOctaves);
+    }
+
+    public void GenerateNextChordProgression()
+    {
+        List<int[]> options = new List<int[]>();
+        options.Add(new int[4] { 0, 2, 6, 4 });
+        options.Add(new int[5] { 0, 2, 3, 2, 4 });
+
+        int index = UnityEngine.Random.Range(0, options.Count);
+
+        chordProgression = new int[options.ToArray()[index].Length];
+        int i = 0;
+        foreach(int n in options.ToArray()[index])
+        {
+            chordProgression[i++] = n;
+        }
     }
 
     public Note[] GetRandomChordInScale()
