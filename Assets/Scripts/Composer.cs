@@ -20,7 +20,7 @@ class Composer
         settings.baseNote = baseNote;
         settings.numOctaves = numOctaves;
 
-        if(scaleType == 1)
+        if (scaleType == 1)
             scale = new MinorScale(baseNote, numOctaves);
         else if (scaleType == 2)
             scale = new MajorScale(baseNote, numOctaves);
@@ -31,7 +31,6 @@ class Composer
 public abstract class Scale
 {
 
-    private int type;
     protected Note[] notes;
     protected Chord[] chords;
     protected int[] chordProgression;
@@ -81,7 +80,7 @@ public abstract class Scale
         options.Add(new int[4] { 0, 2, 6, 4 });
         options.Add(new int[5] { 0, 2, 3, 2, 4 });
 
-        int index = UnityEngine.Random.Range(0, options.Count);
+        int index = Random.Range(0, options.Count);
 
         //Debug.Log("Current Chord Progression ::::" + index);
 
@@ -97,13 +96,13 @@ public abstract class Scale
     public Note[] GetRandomChordInScale()
     {
         int index = 0;
-        float f = UnityEngine.Random.Range(0f, 1f);
+        float f = Random.Range(0f, 1f);
         if (f > 0.75f) index = 0;
         else if (f < 0.75 && f > 0.50) index = 3;
         else if (f < 0.50 && f > 0.35) index = 4;
         else
         {
-            index = UnityEngine.Random.Range(3, notes.Length);
+            index = Random.Range(3, notes.Length);
             if (index == 3) index = 1;
             if (index == 4) index = 2;
 
@@ -194,7 +193,6 @@ public abstract class Chord
 
     public Chord(string type, int baseNoteIndex, Note[] scale)
     {
-
         typeName = type;
     }
 

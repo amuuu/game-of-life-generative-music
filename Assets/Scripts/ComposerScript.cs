@@ -8,21 +8,15 @@ public struct SoundObject
 {
     public GameObject obj;
     public int noteNumber;
-    public bool isEnabled;
-
-    public void SetActive(bool b)
-    {
-        isEnabled = b;
-    }
 }
 
 public class ComposerScript : MonoBehaviour
 {
     public GameObject audioPrefab;
 
-    public int scaleType; // 1:minor / 2:major
-    public int baseNote; // c2: 36 c8: 88
-    public int numOctaves; // 3
+    public int scaleType;
+    public int baseNote;
+    public int numOctaves;
     public bool isChordMode = false;
     public bool isChordProgressionMode = false;
     public bool randomTimeMode = false;
@@ -132,7 +126,7 @@ public class ComposerScript : MonoBehaviour
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(samplesRootPath + f.Name.Replace(".wav", ""));
                 
-                sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
+                sounds.Add(new SoundObject { noteNumber = noteNum, obj = tmp });
 
                 if (fileLoadStats)
                     print("LOADED: " + f.Name);
@@ -155,7 +149,7 @@ public class ComposerScript : MonoBehaviour
                 GameObject tmp = Instantiate(audioPrefab);
                 tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(samplesRootPath + f.Name.Replace(".wav", ""));
 
-                sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
+                sounds.Add(new SoundObject { noteNumber = noteNum, obj = tmp });
                 
                 if (fileLoadStats)
                     print("LOADED ON RUNTIME: " + f.Name);
