@@ -283,20 +283,15 @@ class Scale
     }
 }
 
-public class Chord
+public abstract class Chord
 {
-    Note[] notes;
-    string typeName;
+    protected Note[] notes;
+    protected string typeName;
 
     public Chord(string type, int baseNoteIndex, Note[] scale)
     {
-        switch(type)
-        {
-            case "M": notes = new Note[3] { scale[(baseNoteIndex) % 7], scale[(baseNoteIndex + 2) % 7], scale[(baseNoteIndex + 4 ) % 7] }; break;
-            case "m": notes = new Note[3] { scale[(baseNoteIndex) % 7], new Note((scale[(baseNoteIndex + 2) % 7].number - 1) % 12), scale[(baseNoteIndex + 4) % 7] }; break;
-            case "dim": notes = new Note[3] { scale[(baseNoteIndex) % 7], new Note((scale[(baseNoteIndex + 2) % 7].number - 1) % 12), new Note((scale[(baseNoteIndex + 4) % 7].number - 1) % 12) }; break;
-            default: break;
-        }
+
+        typeName = type;
     }
 
     public Note[] GetNotes()
@@ -323,8 +318,29 @@ public class Chord
 
 public class MinorChord : Chord
 {
-
+    public MinorChord(int baseNoteIndex, Note[] scale) : base("m", baseNoteIndex, scale)
+    {
+        this.notes = new Note[3] { scale[(baseNoteIndex) % 7], scale[(baseNoteIndex + 2) % 7], scale[(baseNoteIndex + 4) % 7] };
+    }
 }
+
+
+public class MajorChord : Chord
+{
+    public MajorChord(int baseNoteIndex, Note[] scale) : base("M", baseNoteIndex, scale)
+    {
+        this.notes = new Note[3] { scale[(baseNoteIndex) % 7], new Note((scale[(baseNoteIndex + 2) % 7].number - 1) % 12), scale[(baseNoteIndex + 4) % 7] };
+    }
+}
+
+public class DimChord : Chord
+{
+    public DimChord(int baseNoteIndex, Note[] scale) : base("dim", baseNoteIndex, scale)
+    {
+        this.notes = new Note[3] { scale[(baseNoteIndex) % 7], scale[(baseNoteIndex + 2) % 7], scale[(baseNoteIndex + 4) % 7] };
+    }
+}
+
 
 public class Note
 {
@@ -408,25 +424,26 @@ public static class Utility
     public static Chord[] GetScaleChords(int type, Note[] notes)
     {
         Chord[] chords = new Chord[7];
+
         if (type == 1)
         {
-            chords[0] = new Chord("m", 0, notes);
-            chords[1] = new Chord("dim", 1, notes);
-            chords[2] = new Chord("M", 2, notes);
-            chords[3] = new Chord("m", 3, notes);
-            chords[4] = new Chord("m", 4, notes);
-            chords[5] = new Chord("M", 5, notes);
-            chords[6] = new Chord("M", 6, notes);
+            chords[0] = new MinorChord(0, notes);
+            chords[1] = new DimChord(1, notes);
+            chords[2] = new MajorChord(2, notes);
+            chords[3] = new MinorChord(3, notes);
+            chords[4] = new MinorChord(4, notes);
+            chords[5] = new MajorChord(5, notes);
+            chords[6] = new MajorChord(6, notes);
         }
         else if (type == 2)
         {
-            chords[0] = new Chord("M", 0, notes);
-            chords[1] = new Chord("m", 1, notes);
-            chords[2] = new Chord("m", 2, notes);
-            chords[3] = new Chord("M", 3, notes);
-            chords[4] = new Chord("M", 4, notes);
-            chords[5] = new Chord("m", 5, notes);
-            chords[6] = new Chord("dim", 6, notes);
+            chords[0] = new MajorChord(0, notes);
+            chords[1] = new MinorChord(1, notes);
+            chords[2] = new MinorChord(2, notes);
+            chords[3] = new MajorChord(3, notes);
+            chords[4] = new MajorChord(4, notes);
+            chords[5] = new MinorChord(5, notes);
+            chords[6] = new DimChord(6, notes);
         }
         
         return chords;
