@@ -175,7 +175,7 @@ MonoBehaviour:
   cubeMargin: 20
   randomParticlesNumber: 0
   presetStructuresNumber: 150
-  eyeSightRadius: 500
+  eyeSightRadius: 700
   hearingRadius: 300
   baseVol: 0.12
   scale: 2
@@ -427,10 +427,10 @@ MonoBehaviour:
   numOctaves: 3
   isChordMode: 1
   isChordProgressionMode: 1
-  fileLoadStats: 0
   randomTimeMode: 1
   minDelay: 9
   maxDelay: 15
+  fileLoadStats: 0
 --- !u!1 &395974025
 GameObject:
   m_ObjectHideFlags: 0

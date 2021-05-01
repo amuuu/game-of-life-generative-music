@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 public struct Settings
@@ -11,172 +9,12 @@ public struct Settings
     public int numOctaves; // 3
 }
 
-public struct SoundObject
-{
-    public GameObject obj;
-    public int noteNumber;
-    public bool isEnabled;
-
-    public void SetActive(bool b)
-    {
-        isEnabled = b;
-    }
-}
-
-public class Composer : MonoBehaviour
-{
-    public GameObject audioPrefab;
-
-    public int scaleType; // 1:minor / 2:major
-    public int baseNote; // c2: 36 c8: 88
-    public int numOctaves; // 3
-    public bool isChordMode = false;
-    public bool isChordProgressionMode = false;
-    public bool randomTimeMode = false;
-    [Range(5.0f, 9.0f)] public float minDelay = 5;
-    [Range(10.0f, 15.0f)] public float maxDelay = 10;
-    public bool fileLoadStats = false;
-    
-    private float delay;
-    private float time;
-    private string samplesRootPath = "Samples/";
-    private List<SoundObject> sounds;
-    private ComposerController controller;
-    private DirectoryInfo dir;
-    FileInfo[] info;
-    private Note[] nextChordNotes;
-
-    void Start()
-    {
-        dir = new DirectoryInfo("Assets/Resources/" + samplesRootPath);
-        info = dir.GetFiles("*.wav");
-
-        time = Time.fixedTime;
-        if (!randomTimeMode) delay = minDelay;
-        
-
-        controller = new ComposerController(scaleType, baseNote, numOctaves);
-        sounds = new List<SoundObject>();
-
-        // scan the directory and load all the sounds in the scale
-        ScanDirectory();
-    }
-
-    void FixedUpdate()
-    {
-        // change the chord every couple of seconds
-        if (isChordMode)
-        {
-            if (Time.fixedTime >= time)
-            //if(Input.GetKeyDown(KeyCode.L))
-            {
-                if(!isChordProgressionMode)
-                    nextChordNotes = controller.scale.GetRandomChordInScale();
-                else
-                    nextChordNotes = controller.scale.GetNextChordInChordProgression();
-
-                ManageSamplesBasedOnNextChord();
-
-                if(randomTimeMode) delay = UnityEngine.Random.Range(minDelay, maxDelay);
-                time = Time.fixedTime + delay;
-            }
-        }
-    }
-
-    void ManageSamplesBasedOnNextChord()
-    {
-        // if the note that's inside the chord isn't loaded before, load the corresponding samples
-        // if a note is loaded but it's not in the chord, diactive the corresponding samples
-        bool exists;
-
-        foreach (Note n in nextChordNotes)
-        {
-            exists = false;
-            foreach (SoundObject s in sounds)
-            {
-                if (s.noteNumber == n.number)
-                { 
-                    exists = true;
-                    if (!s.obj.activeSelf)
-                    {
-                        s.obj.SetActive(true);
-                    }
-                }
-            }
-
-            if (!exists)
-            {
-                // if note is in the chord but not on the loaded sounds
-                LoadFilesWithNote(n.number);
-            }
-        }
-
-        // if note isn't in the chord but has been loaded before
-        int counter = 0;
-        foreach (SoundObject s in sounds)
-        {
-            //if (!nextChord.ChordContainsNote(s.noteNumber))
-            if (!Utility.ArrayContains(nextChordNotes, s.noteNumber))
-            {
-                s.obj.SetActive(false);
-            }
-            else counter++;
-        }
-    }
-
-    void ScanDirectory()
-    {
-        foreach (FileInfo f in info)
-        {
-            // print("Found: " + f.Name);
-
-            string[] splittedName = f.Name.Split('-');
-
-            int noteNum = Utility.NoteNameToNumber(splittedName[0].ToLower());
-
-            if ((noteNum != -1) && controller.scale.IsInScaleNotes(noteNum))
-            {
-                GameObject tmp = Instantiate(audioPrefab);
-                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(samplesRootPath + f.Name.Replace(".wav", ""));
-                
-                sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
-
-                if (fileLoadStats)
-                    print("LOADED: " + f.Name);
-            }
-        }
-    }
-
-    void LoadFilesWithNote(int noteNumber)
-    {
-        dir = new DirectoryInfo("Assets/Resources/" + samplesRootPath);
-        info = dir.GetFiles("*.wav");
-        foreach (FileInfo f in info)
-        {
-            string[] splittedName = f.Name.Split('-');
-
-            int noteNum = Utility.NoteNameToNumber(splittedName[0].ToLower());
-            if (noteNum == noteNumber)
-            {
-
-                GameObject tmp = Instantiate(audioPrefab);
-                tmp.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>(samplesRootPath + f.Name.Replace(".wav", ""));
-
-                sounds.Add(new SoundObject { isEnabled = true, noteNumber = noteNum, obj = tmp });
-                
-                if (fileLoadStats)
-                    print("LOADED ON RUNTIME: " + f.Name);
-            }
-        }
-    }
-}
-
-class ComposerController
+class Composer
 {
     public Scale scale;
     private Settings settings;
 
-    public ComposerController(int scaleType, int baseNote, int numOctaves)
+    public Composer(int scaleType, int baseNote, int numOctaves)
     {
         settings.scaleType = scaleType;
         settings.baseNote = baseNote;
@@ -186,13 +24,14 @@ class ComposerController
     }
 }
 
+
 class Scale
 {
     Note[] notes;
     Chord[] chords;
     int[] chordProgression;
     int currentChordIndex;
-    
+
     Settings settings;
 
     public Scale(int type, int baseNote, int numOctaves)
@@ -227,7 +66,7 @@ class Scale
     public Note[] GetNextChordInChordProgression()
     {
         if (currentChordIndex + 1 >= chordProgression.Length) currentChordIndex = 0;
-        
+
         //Debug.ClearDeveloperConsole();
         //Debug.Log("Current Chord ::::" + currentChordIndex + "  " + (char)(UnityEngine.Random.Range(50, 150)));
 
@@ -244,10 +83,10 @@ class Scale
         int index = UnityEngine.Random.Range(0, options.Count);
 
         //Debug.Log("Current Chord Progression ::::" + index);
-        
+
         chordProgression = new int[options.ToArray()[index].Length];
         int i = 0;
-        foreach(int n in options.ToArray()[index])
+        foreach (int n in options.ToArray()[index])
         {
             chordProgression[i] = n;
             i++;
@@ -306,7 +145,7 @@ public abstract class Chord
             if (noteIndex == n.number)
                 return true;
         }
-         
+
         return false;
     }
 
@@ -370,7 +209,7 @@ public static class Utility
     public static int NoteNameToNumber(string name)
     {
         int result = 0;
-        
+
         int length = name.Length;
         int octave = int.Parse(name[length - 1].ToString());
 
@@ -445,13 +284,13 @@ public static class Utility
             chords[5] = new MinorChord(5, notes);
             chords[6] = new DimChord(6, notes);
         }
-        
+
         return chords;
     }
 
-    public static bool ArrayContains(Note[]chord, int number)
+    public static bool ArrayContains(Note[] chord, int number)
     {
-        foreach(Note n in chord)
+        foreach (Note n in chord)
         {
             if (n.number == number)
             {
